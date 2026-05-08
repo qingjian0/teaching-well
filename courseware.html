@@ -952,7 +952,18 @@
         }
         
         // 显示提示框
+        let lastToastTime = 0;
+        const TOAST_MIN_INTERVAL = 2000; // 最小提示间隔2秒
+        
         function showToast(message, type = 'info') {
+            const now = Date.now();
+            // 如果距离上次提示时间太短，忽略本次提示
+            if (now - lastToastTime < TOAST_MIN_INTERVAL) {
+                console.log('提示过于频繁，已忽略:', message);
+                return;
+            }
+            lastToastTime = now;
+            
             const toast = document.createElement('div');
             toast.className = `toast ${type}`;
             toast.textContent = message;
@@ -967,35 +978,34 @@
                 z-index: 10000;
                 animation: slideIn 0.3s ease;
                 box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+                display: flex;
+                align-items: center;
+                gap: 0.5rem;
             `;
             
-            // 设置不同类型的背景色
+            // 添加图标
+            const icon = document.createElement('span');
             if (type === 'success') {
                 toast.style.backgroundColor = '#10b981';
+                icon.textContent = '✓';
             } else if (type === 'error') {
                 toast.style.backgroundColor = '#ef4444';
+                icon.textContent = '✕';
             } else {
                 toast.style.backgroundColor = '#3b82f6';
+                icon.textContent = 'ℹ';
             }
-            
-            // 添加动画
-            const style = document.createElement('style');
-            style.textContent = `
-                @keyframes slideIn {
-                    from { transform: translateX(100%); opacity: 0; }
-                    to { transform: translateX(0); opacity: 1; }
-                }
-            `;
-            document.head.appendChild(style);
+            toast.insertBefore(icon, toast.firstChild);
             
             document.body.appendChild(toast);
             
             // 3秒后移除
             setTimeout(() => {
-                toast.style.animation = 'slideIn 0.3s ease reverse';
+                toast.style.animation = 'slideOut 0.3s ease';
                 setTimeout(() => {
-                    document.body.removeChild(toast);
-                    document.head.removeChild(style);
+                    if (document.body.contains(toast)) {
+                        document.body.removeChild(toast);
+                    }
                 }, 300);
             }, 3000);
         }
