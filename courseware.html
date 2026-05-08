@@ -7,8 +7,7 @@
     <link rel="stylesheet" href="css/style.css">
     <!-- 引入Chart.js用于数据可视化 -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <!-- 引入TRAE SOLO SDK用于AI能力 -->
-    <script src="https://cdn.trae.com/sdk/v1/trae-solo.js"></script>
+    <!-- AI能力通过本地智能引擎提供，确保离线可用 -->
     <style>
         /* 教案设计页面专用样式 */
         .courseware-generator {
@@ -423,6 +422,7 @@
     </div>
     
     <script src="js/main.js"></script>
+    <script src="js/local-ai-engine.js"></script>
     <script>
         // 教案设计页面脚本
         document.addEventListener('DOMContentLoaded', function() {
@@ -459,26 +459,28 @@
                 // 显示加载状态
                 document.getElementById('loading').classList.add('active');
                 
-                // 调用生成教案功能，传入教材版本
-                generateCourseware(subject, grade, topic)
-                    .then(response => {
-                        // 隐藏加载状态
-                        document.getElementById('loading').classList.remove('active');
-                        
-                        // 生成教案内容，传入教材版本
-                        const generatedContent = generateCoursewareContent(subject, version, grade, topic, content, selectedTemplate, response.content);
-                        
-                        // 显示结果
-                        document.getElementById('resultContent').innerHTML = generatedContent;
-                        document.getElementById('resultSection').classList.add('active');
-                        showToast('教案生成成功！', 'success');
-                    })
-                    .catch(error => {
-                        // 隐藏加载状态
-                        document.getElementById('loading').classList.remove('active');
-                        showToast('教案生成失败，请稍后重试', 'error');
-                        console.error('教案生成失败：', error);
-                    });
+                // 使用本地智能引擎生成教案
+                LocalAIEngine.generateLessonPlan({
+                    subject: subject,
+                    grade: grade,
+                    topic: topic,
+                    version: version,
+                    content: content,
+                    template: selectedTemplate
+                }).then(response => {
+                    // 隐藏加载状态
+                    document.getElementById('loading').classList.remove('active');
+                    
+                    // 显示结果
+                    document.getElementById('resultContent').innerHTML = response.content;
+                    document.getElementById('resultSection').classList.add('active');
+                    showToast('教案生成成功！', 'success');
+                }).catch(error => {
+                    // 隐藏加载状态
+                    document.getElementById('loading').classList.remove('active');
+                    showToast('教案生成失败，请稍后重试', 'error');
+                    console.error('教案生成失败：', error);
+                });
             });
             
             // 重置按钮点击事件

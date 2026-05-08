@@ -7,8 +7,7 @@
     <link rel="stylesheet" href="css/style.css">
     <!-- 引入Chart.js用于数据可视化 -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <!-- 引入TRAE SOLO SDK用于AI能力 -->
-    <script src="https://cdn.trae.com/sdk/v1/trae-solo.js"></script>
+    <!-- AI能力通过本地智能引擎提供，确保离线可用 -->
 </head>
 <body>
     <header>
@@ -191,6 +190,9 @@
     <script src="js/main.js"></script>
     <script src="js/network-manager.js"></script>
     <script src="js/feedback-manager.js"></script>
+    <script src="js/local-ai-engine.js"></script>
+    <script src="js/template-library.js"></script>
+    <script src="js/ai-config-manager.js"></script>
     <script>
         // 添加网络状态指示器和纠错反馈入口
         document.addEventListener('DOMContentLoaded', function() {
