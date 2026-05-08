@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>作业批改辅助 - 教案活井</title>
+    <link rel="stylesheet" href="css/style.css">
+    <!-- 引入Chart.js用于数据可视化 -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- 引入TRAE SOLO SDK用于AI能力 -->
+    <script src="https://cdn.trae.com/sdk/v1/trae-solo.js"></script>
+    <style>
+        /* 作业批改页面特有样式 */
+        .grading-section {
+            padding: 2rem 0;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        .grading-form {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
+            padding: 2.5rem;
+            margin-bottom: 2rem;
+            border: 1px solid #e2e8f0;
+        }
+        
+        .grading-form h3 {
+            color: #2d3748;
+            margin-bottom: 2rem;
+            font-weight: 700;
+        }
+        
+        .form-group {
+            margin-bottom: 1.75rem;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 0.75rem;
+            font-weight: 700;
+            color: #2d3748;
+        }
+        
+        .form-group select,
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 0.875rem;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.2s ease;
+        }
+        
+        .form-group select:focus,
+        .form-group input:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #4f46e5;
+        }
+        
+        .form-group textarea {
+            resize: vertical;
+            min-height: 120px;
+        }
+        
+        .form-actions {
+            display: flex;
+            gap: 1.25rem;
+            flex-wrap: wrap;
+            margin-top: 2rem;
+        }
+        
+        .grading-results {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
+            padding: 2.5rem;
+            border: 1px solid #e2e8f0;
+        }
+        
+        .grading-results h3 {
+            color: #2d3748;
+            margin-bottom: 2rem;
+            font-weight: 700;
+        }
+        
+        .result-section {
+            margin-bottom: 2rem;
+            padding-bottom: 2rem;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        
+        .result-section:last-child {
+            margin-bottom: 0;
+            padding-bottom: 0;
+            border-bottom: none;
+        }
+        
+        .result-section h4 {
+            color: #4f46e5;
+            margin-bottom: 1rem;
+            font-weight: 700;
+        }
+        
+        .result-content {
+            background-color: #f7fafc;
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            min-height: 150px;
+            border: 1px solid #e2e8f0;
+        }
+        
+        .chart-container {
+            margin-top: 1.5rem;
+            max-width: 600px;
+        }
+        
+        /* 响应式调整 */
+        @media (max-width: 768px) {
+            .grading-form,
+            .grading-results {
+                padding: 1.5rem;
+            }
+            
+            .form-actions {
+                flex-direction: column;
+            }
+            
+            .form-actions button {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="header-container">
+            <h1>教案活井</h1>
+            <div class="mobile-menu-toggle">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+            <nav class="main-nav">
+                <ul>
+                    <li><a href="index.html">首页</a></li>
+                    <li><a href="courseware.html">教案设计</a></li>
+                    <li><a href="keypoints.html">重难点解析</a></li>
+                    <li><a href="grading.html" class="active">作业批改</a></li>
+                    <li><a href="resources.html">教学资源</a></li>
+                    <li><a href="template-library.html">教案模板</a></li>
+                    <li><a href="training.html">教师培训</a></li>
+                    <li><a href="shared-pool.html">共享池</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+    
+    <main>
+        <section class="hero small">
+            <h2>作业批改辅助</h2>
+            <p>提供作业批改参考标准，生成个性化学生反馈，分析学习情况</p>
+        </section>
+        
+        <section class="grading-section">
+            <div class="container">
+                <div class="grading-form">
+                    <h3>作业信息</h3>
+                    <div class="form-group">
+                        <label for="subject">学科</label>
+                        <select id="subject" class="subject-selector">
+                            <option value="">选择学科</option>
+                            <option value="chinese">语文</option>
+                            <option value="math">数学</option>
+                            <option value="english">英语</option>
+                            <option value="science">科学</option>
+                            <option value="other">其他</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="grade">年级</label>
+                        <select id="grade" class="grade-selector">
+                            <option value="">选择年级</option>
+                            <option value="1">一年级</option>
+                            <option value="2">二年级</option>
+                            <option value="3">三年级</option>
+                            <option value="4">四年级</option>
+                            <option value="5">五年级</option>
+                            <option value="6">六年级</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="topic">作业主题</label>
+                        <input type="text" id="topic" class="topic-input" placeholder="请输入作业主题">
+                    </div>
+                    <div class="form-group">
+                        <label for="assignment-content">作业内容</label>
+                        <textarea id="assignment-content" placeholder="请输入作业内容或题目"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="student-answer">学生答案</label>
+                        <textarea id="student-answer" placeholder="请输入学生答案"></textarea>
+                    </div>
+                    <div class="form-actions">
+                        <button id="generate-standard" class="btn-primary">生成批改标准</button>
+                        <button id="generate-feedback" class="btn-secondary">生成反馈建议</button>
+                        <button id="analyze-learning" class="btn-secondary">分析学习情况</button>
+                    </div>
+                </div>
+                
+                <div class="grading-results">
+                    <h3>批改结果</h3>
+                    <div id="standard-result" class="result-section">
+                        <h4>批改参考标准</h4>
+                        <div class="result-content"></div>
+                    </div>
+                    <div id="feedback-result" class="result-section">
+                        <h4>学生反馈建议</h4>
+                        <div class="result-content"></div>
+                    </div>
+                    <div id="analysis-result" class="result-section">
+                        <h4>学习情况分析</h4>
+                        <div class="result-content"></div>
+                        <div class="chart-container">
+                            <canvas id="learning-chart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+    
+    <footer>
+        <div class="footer-container">
+            <div class="footer-info">
+                <h3>教案活井</h3>
+                <p>专注于教案设计的轻量级智能教学工具</p>
+            </div>
+            <div class="footer-links">
+                <h4>快速链接</h4>
+                <ul>
+                    <li><a href="index.html">首页</a></li>
+                    <li><a href="courseware.html">教案设计</a></li>
+                    <li><a href="resources.html">教学资源</a></li>
+                    <li><a href="training.html">教师培训</a></li>
+                </ul>
+            </div>
+            <div class="footer-contact">
+                <h4>了解更多</h4>
+                <p>轻量级架构，开箱即用</p>
+                <p>专注功能，简洁高效</p>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2026 教案活井 - 专注教案设计</p>
+        </div>
+    </footer>
+    
+    <script src="js/main.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="js/grading.js"></script>
+</body>
+</html>

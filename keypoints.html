@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>重难点解析 - 教案活井</title>
+    <link rel="stylesheet" href="css/style.css">
+    <!-- 引入Chart.js用于数据可视化 -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- 引入TRAE SOLO SDK用于AI能力 -->
+    <script src="https://cdn.trae.com/sdk/v1/trae-solo.js"></script>
+    <style>
+        /* 重难点分析页面特有样式 */
+        .keypoints-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .keypoints-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        
+        .keypoints-header h2 {
+            color: #2d3748;
+            margin-bottom: 10px;
+        }
+        
+        .keypoints-header p {
+            color: #4a5568;
+            font-size: 18px;
+        }
+        
+        .input-section {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
+            border: 1px solid #e2e8f0;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: #2d3748;
+        }
+        
+        .form-group select,
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.2s ease;
+        }
+        
+        .form-group select:focus,
+        .form-group input:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #4f46e5;
+        }
+        
+        .form-group textarea {
+            min-height: 150px;
+            resize: vertical;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3);
+        }
+        
+        .btn-primary:disabled {
+            background: #e2e8f0;
+            cursor: not-allowed;
+        }
+        
+        .results-section {
+            margin-top: 40px;
+        }
+        
+        .results-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .results-header h3 {
+            color: #2d3748;
+        }
+        
+        .tab-container {
+            border-bottom: 1px solid #e2e8f0;
+            margin-bottom: 20px;
+        }
+        
+        .tab-buttons {
+            display: flex;
+        }
+        
+        .tab-button {
+            padding: 12px 24px;
+            background: none;
+            border: none;
+            border-bottom: 3px solid transparent;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            color: #4a5568;
+            transition: all 0.3s;
+        }
+        
+        .tab-button.active {
+            border-bottom-color: #4f46e5;
+            color: #4f46e5;
+        }
+        
+        .tab-content {
+            display: none;
+            padding: 20px;
+            background: white;
+            border-radius: 0 0 12px 12px;
+            border: 1px solid #e2e8f0;
+            border-top: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        .keypoint-item {
+            background: #f7fafc;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            box-shadow: 0 1px 5px rgba(0,0,0,0.05);
+        }
+        
+        .keypoint-item h4 {
+            color: #2d3748;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .keypoint-item h4 .difficulty {
+            margin-left: 10px;
+            padding: 3px 10px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: normal;
+        }
+        
+        .difficulty.high {
+            background: #e11d48;
+            color: white;
+        }
+        
+        .difficulty.medium {
+            background: #ea580c;
+            color: white;
+        }
+        
+        .difficulty.low {
+            background: #059669;
+            color: white;
+        }
+        
+        .keypoint-item p {
+            color: #374151;
+            margin-bottom: 10px;
+        }
+        
+        .script-content {
+            background: #f7fafc;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 1px 5px rgba(0,0,0,0.05);
+            line-height: 1.6;
+        }
+        
+        .visualization-container {
+            background: #f7fafc;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 1px 5px rgba(0,0,0,0.05);
+            margin-top: 20px;
+        }
+        
+        .loading {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 40px;
+            color: #4f46e5;
+        }
+        
+        .loading::after {
+            content: '';
+            width: 24px;
+            height: 24px;
+            border: 3px solid #e2e8f0;
+            border-top: 3px solid #4f46e5;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-left: 10px;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .error-message {
+            background: #fef2f2;
+            border: 1px solid #fecaca;
+            color: #dc2626;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="header-container">
+            <h1>教案活井</h1>
+            <div class="mobile-menu-toggle">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+            <nav class="main-nav">
+                <ul>
+                    <li><a href="index.html">首页</a></li>
+                    <li><a href="courseware.html">教案设计</a></li>
+                    <li><a href="keypoints.html" class="active">重难点解析</a></li>
+                    <li><a href="grading.html">作业批改</a></li>
+                    <li><a href="resources.html">教学资源</a></li>
+                    <li><a href="template-library.html">教案模板</a></li>
+                    <li><a href="training.html">教师培训</a></li>
+                    <li><a href="shared-pool.html">共享池</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+    
+    <main>
+        <div class="keypoints-container">
+            <div class="keypoints-header">
+                <h2>重难点解析与讲解脚本</h2>
+                <p>输入教学内容，系统将自动分析重难点并生成讲解脚本</p>
+            </div>
+            
+            <div class="input-section">
+                <form id="keypoints-form">
+                    <div class="form-group">
+                        <label for="subject">学科</label>
+                        <select id="subject" required>
+                            <option value="">选择学科</option>
+                            <option value="chinese">语文</option>
+                            <option value="math">数学</option>
+                            <option value="english">英语</option>
+                            <option value="science">科学</option>
+                            <option value="other">其他</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="grade">年级</label>
+                        <select id="grade" required>
+                            <option value="">选择年级</option>
+                            <option value="1">一年级</option>
+                            <option value="2">二年级</option>
+                            <option value="3">三年级</option>
+                            <option value="4">四年级</option>
+                            <option value="5">五年级</option>
+                            <option value="6">六年级</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="topic">教学主题</label>
+                        <input type="text" id="topic" placeholder="请输入教学主题" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="content">教学内容</label>
+                        <textarea id="content" placeholder="请输入教学内容，例如课文、公式、知识点等" required></textarea>
+                    </div>
+                    
+                    <button type="submit" class="btn-primary" id="analyze-btn">分析重难点</button>
+                </form>
+            </div>
+            
+            <div class="results-section" id="results-section" style="display: none;">
+                <div class="results-header">
+                    <h3>分析结果</h3>
+                    <button class="btn-primary" id="regenerate-btn">重新生成</button>
+                </div>
+                
+                <div class="tab-container">
+                    <div class="tab-buttons">
+                        <button class="tab-button active" data-tab="keypoints">重难点分析</button>
+                        <button class="tab-button" data-tab="script">讲解脚本</button>
+                        <button class="tab-button" data-tab="visualization">知识点可视化</button>
+                        <button class="tab-button" data-tab="divination">卦象分析</button>
+                    </div>
+                    
+                    <div class="tab-content active" id="keypoints-tab">
+                        <div id="keypoints-loading" class="loading" style="display: none;">
+                            正在分析重难点...
+                        </div>
+                        <div id="keypoints-results"></div>
+                    </div>
+                    
+                    <div class="tab-content" id="script-tab">
+                        <div id="script-loading" class="loading" style="display: none;">
+                            正在生成讲解脚本...
+                        </div>
+                        <div id="script-results"></div>
+                    </div>
+                    
+                    <div class="tab-content" id="visualization-tab">
+                        <div id="visualization-loading" class="loading" style="display: none;">
+                            正在生成可视化展示...
+                        </div>
+                        <div id="visualization-results"></div>
+                    </div>
+                    
+                    <div class="tab-content" id="divination-tab">
+                        <div id="divination-loading" class="loading" style="display: none;">
+                            正在进行卦象分析...
+                        </div>
+                        <div id="divination-results"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+    
+    <footer>
+        <div class="footer-container">
+            <div class="footer-info">
+                <h3>教案活井</h3>
+                <p>专注于教案设计的轻量级智能教学工具</p>
+            </div>
+            <div class="footer-links">
+                <h4>快速链接</h4>
+                <ul>
+                    <li><a href="index.html">首页</a></li>
+                    <li><a href="courseware.html">教案设计</a></li>
+                    <li><a href="resources.html">教学资源</a></li>
+                    <li><a href="training.html">教师培训</a></li>
+                </ul>
+            </div>
+            <div class="footer-contact">
+                <h4>了解更多</h4>
+                <p>轻量级架构，开箱即用</p>
+                <p>专注功能，简洁高效</p>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2026 教案活井 - 专注教案设计</p>
+        </div>
+    </footer>
+    
+    <script src="js/main.js"></script>
+    <script src="js/keypoints.js"></script>
+</body>
+</html>

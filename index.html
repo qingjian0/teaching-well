@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>教案活井 - 智能教学助手</title>
+    <link rel="stylesheet" href="css/style.css">
+    <!-- 引入Chart.js用于数据可视化 -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- 引入TRAE SOLO SDK用于AI能力 -->
+    <script src="https://cdn.trae.com/sdk/v1/trae-solo.js"></script>
+</head>
+<body>
+    <header>
+        <div class="header-container">
+            <h1>教案活井</h1>
+            <div class="mobile-menu-toggle">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+            <nav class="main-nav">
+                <ul>
+                    <li><a href="index.html" class="active">首页</a></li>
+                    <li><a href="courseware.html">教案设计</a></li>
+                    <li><a href="keypoints.html">重难点解析</a></li>
+                    <li><a href="grading.html">作业批改</a></li>
+                    <li><a href="resources.html">教学资源</a></li>
+                    <li><a href="template-library.html">教案模板</a></li>
+                    <li><a href="training.html">教师培训</a></li>
+                    <li><a href="shared-pool.html">共享池</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+    
+    <main>
+        <section class="hero">
+            <h2>教案活井，让教学准备更简单</h2>
+            <p>专注于教案设计的智能工具，提供高质量的教案生成、课件制作和教学辅助功能，帮助教师高效完成教学准备工作</p>
+            <button class="btn-primary" onclick="window.location.href='courseware.html'">开始设计教案</button>
+        </section>
+        
+        <section class="features">
+            <h2>核心功能</h2>
+            <div class="feature-grid">
+                <div class="feature-item">
+                    <div class="feature-icon">📝</div>
+                    <h3>教案设计</h3>
+                    <p>智能化教案生成，支持多种教学场景和学科，一键生成完整的教学方案</p>
+                    <button class="btn-secondary" onclick="window.location.href='courseware.html'">立即使用</button>
+                </div>
+                <div class="feature-item">
+                    <div class="feature-icon">🎨</div>
+                    <h3>课件制作</h3>
+                    <p>精美课件模板，支持自定义编辑，快速制作专业的教学演示文档</p>
+                    <button class="btn-secondary" onclick="window.location.href='courseware.html'">立即使用</button>
+                </div>
+                <div class="feature-item">
+                    <div class="feature-icon">💡</div>
+                    <h3>重难点解析</h3>
+                    <p>深度分析教学内容，提供详细的讲解思路和方法，提升教学质量</p>
+                    <button class="btn-secondary" onclick="window.location.href='keypoints.html'">立即使用</button>
+                </div>
+                <div class="feature-item">
+                    <div class="feature-icon">✏️</div>
+                    <h3>作业批改</h3>
+                    <p>智能辅助批改，生成个性化的学生反馈建议，提高批改效率</p>
+                    <button class="btn-secondary" onclick="window.location.href='grading.html'">立即使用</button>
+                </div>
+            </div>
+        </section>
+        
+        <section class="features">
+            <h2>新增功能</h2>
+            <div class="feature-grid">
+                <div class="feature-item">
+                    <div class="feature-icon">📶</div>
+                    <h3>弱网纯文本模式</h3>
+                    <p>智能检测网络状态，弱网时自动切换纯文本模式，支持离线查看已保存的教案和模板</p>
+                    <button class="btn-secondary" onclick="window.location.href='shared-pool.html'">了解更多</button>
+                </div>
+                <div class="feature-item">
+                    <div class="feature-icon">⚠️</div>
+                    <h3>内容纠错反馈</h3>
+                    <p>一键上报错误内容，选择文本后点击纠错按钮即可提交反馈，帮助我们持续改进内容质量</p>
+                    <button class="btn-secondary" onclick="window.FeedbackManager && window.FeedbackManager.openFeedbackPanel()">使用纠错</button>
+                </div>
+                <div class="feature-item">
+                    <div class="feature-icon">👥</div>
+                    <h3>教研群共享池</h3>
+                    <p>分享优质教案，学习他人经验，收藏下载其他教师的优秀教案，共同提升教学质量</p>
+                    <button class="btn-secondary" onclick="window.location.href='shared-pool.html'">进入共享池</button>
+                </div>
+            </div>
+        </section>
+        
+        <section class="demo">
+            <h2>三步轻松完成</h2>
+            <div class="demo-container">
+                <div class="demo-step">
+                    <div class="step-number">1</div>
+                    <h3>输入教学信息</h3>
+                    <p>选择学科、年级和教学主题，简单几步即可开始</p>
+                </div>
+                <div class="demo-step">
+                    <div class="step-number">2</div>
+                    <h3>智能生成内容</h3>
+                    <p>AI驱动的智能生成，快速创建高质量的教学资源</p>
+                </div>
+                <div class="demo-step">
+                    <div class="step-number">3</div>
+                    <h3>编辑与使用</h3>
+                    <p>根据需要灵活编辑，直接用于课堂教学</p>
+                </div>
+            </div>
+        </section>
+        
+        <section class="ui-components">
+            <h2>快速体验组件</h2>
+            <div class="component-grid">
+                <div class="component-item">
+                    <h3>学科选择</h3>
+                    <div class="component-preview">
+                        <select class="subject-selector">
+                            <option value="">选择学科</option>
+                            <option value="chinese">语文</option>
+                            <option value="math">数学</option>
+                            <option value="english">英语</option>
+                            <option value="science">科学</option>
+                            <option value="other">其他</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="component-item">
+                    <h3>年级选择</h3>
+                    <div class="component-preview">
+                        <select class="grade-selector">
+                            <option value="">选择年级</option>
+                            <option value="1">一年级</option>
+                            <option value="2">二年级</option>
+                            <option value="3">三年级</option>
+                            <option value="4">四年级</option>
+                            <option value="5">五年级</option>
+                            <option value="6">六年级</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="component-item">
+                    <h3>主题输入</h3>
+                    <div class="component-preview">
+                        <input type="text" class="topic-input" placeholder="请输入教学主题">
+                    </div>
+                </div>
+                <div class="component-item">
+                    <h3>一键生成</h3>
+                    <div class="component-preview">
+                        <button class="btn-generate">生成资源</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+    
+    <footer>
+        <div class="footer-container">
+            <div class="footer-info">
+                <h3>教案活井</h3>
+                <p>专注于教案设计的轻量级智能教学工具</p>
+            </div>
+            <div class="footer-links">
+                <h4>快速链接</h4>
+                <ul>
+                    <li><a href="index.html">首页</a></li>
+                    <li><a href="courseware.html">教案设计</a></li>
+                    <li><a href="resources.html">教学资源</a></li>
+                    <li><a href="training.html">教师培训</a></li>
+                </ul>
+            </div>
+            <div class="footer-contact">
+                <h4>了解更多</h4>
+                <p>轻量级架构，开箱即用</p>
+                <p>专注功能，简洁高效</p>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2026 教案活井 - 专注教案设计</p>
+        </div>
+    </footer>
+    
+    <script src="js/main.js"></script>
+    <script src="js/network-manager.js"></script>
+    <script src="js/feedback-manager.js"></script>
+    <script>
+        // 添加网络状态指示器和纠错反馈入口
+        document.addEventListener('DOMContentLoaded', function() {
+            // 创建网络状态指示器
+            const networkIndicator = document.createElement('div');
+            networkIndicator.className = 'network-status-indicator online';
+            networkIndicator.id = 'network-indicator';
+            networkIndicator.innerHTML = '<span class="status-icon">📶</span><span class="status-text">在线</span>';
+            networkIndicator.title = '点击切换纯文本模式';
+            networkIndicator.style.cssText = 'position: fixed; top: 5rem; right: 1rem; z-index: 9998; cursor: pointer;';
+            document.body.appendChild(networkIndicator);
+            
+            // 创建纠错反馈入口按钮
+            const feedbackBtn = document.createElement('button');
+            feedbackBtn.className = 'feedback-entry-btn';
+            feedbackBtn.innerHTML = '⚠️';
+            feedbackBtn.title = '内容纠错反馈';
+            feedbackBtn.onclick = function() {
+                if (window.FeedbackManager) {
+                    FeedbackManager.openFeedbackPanel();
+                }
+            };
+            document.body.appendChild(feedbackBtn);
+            
+            // 更新网络状态指示器
+            if (window.NetworkManager) {
+                NetworkManager.onStatusChange(function(status) {
+                    const indicator = document.getElementById('network-indicator');
+                    if (status.isOnline) {
+                        indicator.className = 'network-status-indicator online';
+                        indicator.innerHTML = '<span class="status-icon">📶</span><span class="status-text">在线</span>';
+                    } else {
+                        indicator.className = 'network-status-indicator offline';
+                        indicator.innerHTML = '<span class="status-icon">📴</span><span class="status-text">离线</span>';
+                    }
+                    if (status.isWeakNetwork) {
+                        indicator.className = 'network-status-indicator weak-network';
+                        indicator.innerHTML = '<span class="status-icon">📶</span><span class="status-text">弱网</span>';
+                    }
+                });
+                
+                // 点击切换纯文本模式
+                networkIndicator.addEventListener('click', function() {
+                    NetworkManager.toggleTextOnlyMode();
+                });
+            }
+        });
+    </script>
+</body>
+</html>

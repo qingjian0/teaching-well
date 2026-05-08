@@ -1,0 +1,1005 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>教案设计 - 教案活井</title>
+    <link rel="stylesheet" href="css/style.css">
+    <!-- 引入Chart.js用于数据可视化 -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- 引入TRAE SOLO SDK用于AI能力 -->
+    <script src="https://cdn.trae.com/sdk/v1/trae-solo.js"></script>
+    <style>
+        /* 教案设计页面专用样式 */
+        .courseware-generator {
+            background-color: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
+            padding: 2.5rem;
+            margin-bottom: 2rem;
+            border: 1px solid #e2e8f0;
+        }
+        
+        .generator-header {
+            text-align: center;
+            margin-bottom: 2.5rem;
+        }
+        
+        .generator-header h2 {
+            background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 1rem;
+            font-weight: 800;
+        }
+        
+        .generator-header p {
+            color: #4a5568;
+        }
+        
+        .form-group {
+            margin-bottom: 1.75rem;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 0.75rem;
+            font-weight: 700;
+            color: #2d3748;
+        }
+        
+        .form-group select,
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 0.875rem;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.2s ease;
+        }
+        
+        .form-group select:focus,
+        .form-group input:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #4f46e5;
+        }
+        
+        .form-group textarea {
+            resize: vertical;
+            min-height: 120px;
+        }
+        
+        .template-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.25rem;
+            margin-bottom: 2.5rem;
+        }
+        
+        .template-item {
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            padding: 1.5rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background-color: white;
+        }
+        
+        .template-item:hover {
+            border-color: #4f46e5;
+            transform: translateY(-3px);
+            box-shadow: 0 4px 12px rgba(79, 70, 229, 0.15);
+        }
+        
+        .template-item.selected {
+            border-color: #4f46e5;
+            background-color: #eef2ff;
+        }
+        
+        .template-preview {
+            width: 100%;
+            height: 120px;
+            background-color: #f7fafc;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 0.75rem;
+            font-size: 2.5rem;
+        }
+        
+        .action-buttons {
+            display: flex;
+            gap: 1.25rem;
+            justify-content: center;
+            margin-top: 2.5rem;
+            flex-wrap: wrap;
+        }
+        
+        .btn-large {
+            padding: 1rem 2.5rem;
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+        
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 2.5rem;
+        }
+        
+        .loading.active {
+            display: block;
+        }
+        
+        .spinner {
+            border: 4px solid #e2e8f0;
+            border-top: 4px solid #4f46e5;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 1.25rem;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .result-section {
+            display: none;
+            margin-top: 2.5rem;
+            padding-top: 2.5rem;
+            border-top: 2px solid #e2e8f0;
+        }
+        
+        .result-section.active {
+            display: block;
+        }
+        
+        .result-content {
+            background-color: #f7fafc;
+            border-radius: 10px;
+            padding: 2rem;
+            margin-bottom: 1.75rem;
+            min-height: 300px;
+            border: 1px solid #e2e8f0;
+        }
+        
+        .result-actions {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        
+        /* 响应式调整 */
+        @media (max-width: 768px) {
+            .courseware-generator {
+                padding: 1.5rem;
+            }
+            .action-buttons,
+            .result-actions {
+                flex-direction: column;
+            }
+            
+            .btn-large {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="header-container">
+            <h1>教案活井</h1>
+            <div class="mobile-menu-toggle">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+            <nav class="main-nav">
+                <ul>
+                    <li><a href="index.html">首页</a></li>
+                    <li><a href="courseware.html" class="active">教案设计</a></li>
+                    <li><a href="keypoints.html">重难点解析</a></li>
+                    <li><a href="grading.html">作业批改</a></li>
+                    <li><a href="resources.html">教学资源</a></li>
+                    <li><a href="template-library.html">教案模板</a></li>
+                    <li><a href="training.html">教师培训</a></li>
+                    <li><a href="shared-pool.html">共享池</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+    
+    <main>
+        <section class="courseware-generator">
+            <div class="generator-header">
+                <h2>智能教案设计</h2>
+                <p>根据教学需求，快速生成高质量的教案和课件</p>
+            </div>
+            
+            <form id="coursewareForm">
+                <div class="form-group">
+                    <label for="subject">学科</label>
+                    <select id="subject" required>
+                        <option value="">选择学科</option>
+                        <option value="chinese">语文</option>
+                        <option value="math">数学</option>
+                        <option value="english">英语</option>
+                        <option value="science">科学</option>
+                        <option value="other">其他</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="version">教材版本</label>
+                    <select id="version" required>
+                        <option value="">选择教材版本</option>
+                        <option value="pep">人教版</option>
+                        <option value="moe">部编版</option>
+                        <option value="bsd">北师大版</option>
+                        <option value="hs">沪教版</option>
+                        <option value="universal">通用版</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="grade">年级</label>
+                    <select id="grade" required>
+                        <option value="">选择年级</option>
+                        <option value="1">一年级</option>
+                        <option value="2">二年级</option>
+                        <option value="3">三年级</option>
+                        <option value="4">四年级</option>
+                        <option value="5">五年级</option>
+                        <option value="6">六年级</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="topic">教学主题</label>
+                    <input type="text" id="topic" placeholder="请输入教学主题" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="content">教学内容要求</label>
+                    <textarea id="content" placeholder="请描述您希望教案包含的内容、重点等"></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label>教案模板</label>
+                    <div class="template-grid">
+                        <div class="template-item" data-template="basic">
+                            <div class="template-preview">📝</div>
+                            <p>基础模板</p>
+                        </div>
+                        <div class="template-item" data-template="interactive">
+                            <div class="template-preview">🔄</div>
+                            <p>互动模板</p>
+                        </div>
+                        <div class="template-item" data-template="visual">
+                            <div class="template-preview">🎨</div>
+                            <p>视觉模板</p>
+                        </div>
+                        <div class="template-item" data-template="quiz">
+                            <div class="template-preview">📋</div>
+                            <p>测验模板</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="loading" id="loading">
+                    <div class="spinner"></div>
+                    <p>正在生成教案，请稍候...</p>
+                </div>
+                
+                <div class="action-buttons">
+                    <button type="button" class="btn-primary btn-large" id="generateBtn">生成教案</button>
+                    <button type="button" class="btn-secondary btn-large" id="fineTuneBtn">一键微调</button>
+                    <button type="button" class="btn-secondary btn-large" id="resetBtn">重置</button>
+                </div>
+            </form>
+            
+            <div class="result-section" id="resultSection">
+                <h3 style="text-align: center; margin-bottom: 1.5rem; color: #2d3748; font-weight: 700;">生成结果</h3>
+                <div class="result-content" id="resultContent">
+                    <!-- 生成的教案内容将显示在这里 -->
+                </div>
+                <div class="result-actions">
+                    <button type="button" class="btn-primary" id="previewBtn">预览教案</button>
+                    <button type="button" class="btn-secondary" id="exportBtn">导出教案</button>
+                    <button type="button" class="btn-secondary" id="shareBtn">分享教案</button>
+                    <button type="button" class="btn-secondary" id="printBtn">打印教案</button>
+                    <button type="button" class="btn-secondary" id="regenerateBtn">重新生成</button>
+                </div>
+            </div>
+        </section>
+    </main>
+    
+    <footer>
+        <div class="footer-container">
+            <div class="footer-info">
+                <h3>教案活井</h3>
+                <p>专注于教案设计的轻量级智能教学工具</p>
+            </div>
+            <div class="footer-links">
+                <h4>快速链接</h4>
+                <ul>
+                    <li><a href="index.html">首页</a></li>
+                    <li><a href="courseware.html">教案设计</a></li>
+                    <li><a href="resources.html">教学资源</a></li>
+                    <li><a href="training.html">教师培训</a></li>
+                </ul>
+            </div>
+            <div class="footer-contact">
+                <h4>了解更多</h4>
+                <p>轻量级架构，开箱即用</p>
+                <p>专注功能，简洁高效</p>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2026 教案活井 - 专注教案设计</p>
+        </div>
+    </footer>
+    
+    <!-- 预览模态框 -->
+    <div id="previewModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.5); z-index: 2000;">
+        <div style="position: relative; top: 50%; left: 50%; transform: translate(-50%, -50%); background-color: white; border-radius: 12px; padding: 2.5rem; max-width: 80%; max-height: 80%; overflow: auto; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);">
+            <button id="closePreview" style="position: absolute; top: 1.25rem; right: 1.25rem; background: none; border: none; font-size: 1.75rem; cursor: pointer; color: #4a5568; transition: color 0.2s ease;">×</button>
+            <h3 style="color: #2d3748; margin-bottom: 1.5rem; font-weight: 800;">教案预览</h3>
+            <div id="previewContent" style="margin-top: 1rem;"></div>
+        </div>
+    </div>
+    
+    <!-- 一键微调模态框 -->
+    <div id="fineTuneModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.5); z-index: 2000;">
+        <div style="position: relative; top: 50%; left: 50%; transform: translate(-50%, -50%); background-color: white; border-radius: 12px; padding: 2.5rem; max-width: 80%; max-height: 80%; overflow: auto; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);">
+            <button id="closeFineTune" style="position: absolute; top: 1.25rem; right: 1.25rem; background: none; border: none; font-size: 1.75rem; cursor: pointer; color: #4a5568; transition: color 0.2s ease;">×</button>
+            <h3 style="color: #2d3748; margin-bottom: 1.5rem; font-weight: 800;">一键微调</h3>
+            <div style="margin-top: 1rem;">
+                <form id="fineTuneForm">
+                    <div class="form-group">
+                        <label for="className">班级信息</label>
+                        <input type="text" id="className" placeholder="请输入班级信息，例如：三年级一班">
+                    </div>
+                    <div class="form-group">
+                        <label for="teachingAdjustment">教学调整</label>
+                        <textarea id="teachingAdjustment" placeholder="请输入教学调整内容，例如：增加互动环节、调整难度等"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="additionalRequirements">其他要求</label>
+                        <textarea id="additionalRequirements" placeholder="请输入其他特殊要求"></textarea>
+                    </div>
+                    <div class="action-buttons" style="margin-top: 2rem;">
+                        <button type="button" class="btn-primary" id="applyFineTuneBtn">应用微调</button>
+                        <button type="button" class="btn-secondary" id="cancelFineTuneBtn">取消</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 分享模态框 -->
+    <div id="shareModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.5); z-index: 2000;">
+        <div style="position: relative; top: 50%; left: 50%; transform: translate(-50%, -50%); background-color: white; border-radius: 12px; padding: 2.5rem; max-width: 600px; max-height: 80%; overflow: auto; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);">
+            <button id="closeShare" style="position: absolute; top: 1.25rem; right: 1.25rem; background: none; border: none; font-size: 1.75rem; cursor: pointer; color: #4a5568; transition: color 0.2s ease;">×</button>
+            <h3 style="color: #2d3748; margin-bottom: 1.5rem; font-weight: 800;">分享教案</h3>
+            <div style="margin-top: 1rem;">
+                <div class="form-group">
+                    <label for="shareLink">分享链接</label>
+                    <div style="display: flex; gap: 1rem;">
+                        <input type="text" id="shareLink" readonly style="flex: 1;">
+                        <button type="button" class="btn-secondary" id="copyLinkBtn">复制链接</button>
+                    </div>
+                    <p style="margin-top: 0.5rem; font-size: 0.875rem; color: #718096;">其他教师可通过此链接直接查看教案</p>
+                </div>
+                
+                <div style="margin: 2rem 0;">
+                    <h4 style="color: #4a5568; margin-bottom: 1rem; font-weight: 600;">快速分享</h4>
+                    <div style="display: flex; gap: 1.5rem; justify-content: center;">
+                        <div style="text-align: center; cursor: pointer; padding: 1rem; border-radius: 8px; transition: all 0.2s ease;">
+                            <div style="font-size: 2.5rem; margin-bottom: 0.5rem;">💬</div>
+                            <p style="color: #4a5568; font-size: 0.875rem;">微信分享</p>
+                        </div>
+                        <div style="text-align: center; cursor: pointer; padding: 1rem; border-radius: 8px; transition: all 0.2s ease;">
+                            <div style="font-size: 2.5rem; margin-bottom: 0.5rem;">📱</div>
+                            <p style="color: #4a5568; font-size: 0.875rem;">钉钉分享</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="action-buttons" style="margin-top: 2rem;">
+                    <button type="button" class="btn-secondary" id="closeShareBtn">关闭</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script src="js/main.js"></script>
+    <script>
+        // 教案设计页面脚本
+        document.addEventListener('DOMContentLoaded', function() {
+            // 模板选择功能
+            const templateItems = document.querySelectorAll('.template-item');
+            templateItems.forEach(item => {
+                item.addEventListener('click', function() {
+                    // 移除其他模板的选中状态
+                    templateItems.forEach(t => t.classList.remove('selected'));
+                    // 添加当前模板的选中状态
+                    this.classList.add('selected');
+                });
+            });
+            
+            // 默认选中第一个模板
+            if (templateItems.length > 0) {
+                templateItems[0].classList.add('selected');
+            }
+            
+            // 生成按钮点击事件
+            document.getElementById('generateBtn').addEventListener('click', function() {
+                const subject = document.getElementById('subject').value;
+                const version = document.getElementById('version').value;
+                const grade = document.getElementById('grade').value;
+                const topic = document.getElementById('topic').value;
+                const content = document.getElementById('content').value;
+                const selectedTemplate = document.querySelector('.template-item.selected').dataset.template;
+                
+                if (!subject || !version || !grade || !topic) {
+                    showToast('请填写完整的教学信息（包括教材版本）', 'error');
+                    return;
+                }
+                
+                // 显示加载状态
+                document.getElementById('loading').classList.add('active');
+                
+                // 调用生成教案功能，传入教材版本
+                generateCourseware(subject, grade, topic)
+                    .then(response => {
+                        // 隐藏加载状态
+                        document.getElementById('loading').classList.remove('active');
+                        
+                        // 生成教案内容，传入教材版本
+                        const generatedContent = generateCoursewareContent(subject, version, grade, topic, content, selectedTemplate, response.content);
+                        
+                        // 显示结果
+                        document.getElementById('resultContent').innerHTML = generatedContent;
+                        document.getElementById('resultSection').classList.add('active');
+                        showToast('教案生成成功！', 'success');
+                    })
+                    .catch(error => {
+                        // 隐藏加载状态
+                        document.getElementById('loading').classList.remove('active');
+                        showToast('教案生成失败，请稍后重试', 'error');
+                        console.error('教案生成失败：', error);
+                    });
+            });
+            
+            // 重置按钮点击事件
+            document.getElementById('resetBtn').addEventListener('click', function() {
+                if (!confirm('确定要重置表单吗？')) {
+                    return;
+                }
+                document.getElementById('coursewareForm').reset();
+                templateItems.forEach(t => t.classList.remove('selected'));
+                if (templateItems.length > 0) {
+                    templateItems[0].classList.add('selected');
+                }
+                document.getElementById('resultSection').classList.remove('active');
+                showToast('表单已重置', 'info');
+            });
+            
+            // 预览按钮点击事件
+            document.getElementById('previewBtn').addEventListener('click', function() {
+                const content = document.getElementById('resultContent').innerHTML;
+                document.getElementById('previewContent').innerHTML = content;
+                document.getElementById('previewModal').style.display = 'block';
+            });
+            
+            // 关闭预览
+            document.getElementById('closePreview').addEventListener('click', function() {
+                document.getElementById('previewModal').style.display = 'none';
+            });
+            
+            // 导出按钮点击事件
+            document.getElementById('exportBtn').addEventListener('click', function() {
+                const content = document.getElementById('resultContent').innerHTML;
+                exportCourseware(content);
+                showToast('教案导出成功！', 'success');
+            });
+            
+            // 重新生成按钮点击事件
+            document.getElementById('regenerateBtn').addEventListener('click', function() {
+                document.getElementById('resultSection').classList.remove('active');
+                document.getElementById('generateBtn').click();
+            });
+            
+            // 分享按钮点击事件
+            document.getElementById('shareBtn').addEventListener('click', function() {
+                const content = document.getElementById('resultContent').innerHTML;
+                const shareLink = generateShareLink(content);
+                document.getElementById('shareLink').value = shareLink;
+                document.getElementById('shareModal').style.display = 'block';
+            });
+            
+            // 关闭分享模态框
+            document.getElementById('closeShare').addEventListener('click', function() {
+                document.getElementById('shareModal').style.display = 'none';
+            });
+            
+            // 关闭分享按钮点击事件
+            document.getElementById('closeShareBtn').addEventListener('click', function() {
+                document.getElementById('shareModal').style.display = 'none';
+            });
+            
+            // 复制链接按钮点击事件
+            document.getElementById('copyLinkBtn').addEventListener('click', function() {
+                const shareLink = document.getElementById('shareLink');
+                shareLink.select();
+                document.execCommand('copy');
+                showToast('链接复制成功！', 'success');
+            });
+            
+            // 打印按钮点击事件
+            document.getElementById('printBtn').addEventListener('click', function() {
+                const content = document.getElementById('resultContent').innerHTML;
+                printCourseware(content);
+            });
+            
+            // 一键微调按钮点击事件
+            document.getElementById('fineTuneBtn').addEventListener('click', function() {
+                document.getElementById('fineTuneModal').style.display = 'block';
+            });
+            
+            // 关闭微调模态框
+            document.getElementById('closeFineTune').addEventListener('click', function() {
+                document.getElementById('fineTuneModal').style.display = 'none';
+            });
+            
+            // 取消微调
+            document.getElementById('cancelFineTuneBtn').addEventListener('click', function() {
+                document.getElementById('fineTuneModal').style.display = 'none';
+            });
+            
+            // 应用微调
+            document.getElementById('applyFineTuneBtn').addEventListener('click', function() {
+                const className = document.getElementById('className').value;
+                const teachingAdjustment = document.getElementById('teachingAdjustment').value;
+                const additionalRequirements = document.getElementById('additionalRequirements').value;
+                
+                // 显示加载状态
+                document.getElementById('loading').classList.add('active');
+                document.getElementById('fineTuneModal').style.display = 'none';
+                
+                // 获取当前表单数据
+                const subject = document.getElementById('subject').value;
+                const version = document.getElementById('version').value;
+                const grade = document.getElementById('grade').value;
+                const topic = document.getElementById('topic').value;
+                const content = document.getElementById('content').value;
+                const selectedTemplate = document.querySelector('.template-item.selected').dataset.template;
+                
+                // 调用微调生成功能
+                fineTuneCourseware(subject, version, grade, topic, className, teachingAdjustment, additionalRequirements)
+                    .then(response => {
+                        // 隐藏加载状态
+                        document.getElementById('loading').classList.remove('active');
+                        
+                        // 生成教案内容
+                        const generatedContent = generateCoursewareContent(subject, version, grade, topic, content, selectedTemplate, response.content);
+                        
+                        // 显示结果
+                        document.getElementById('resultContent').innerHTML = generatedContent;
+                        document.getElementById('resultSection').classList.add('active');
+                    })
+                    .catch(error => {
+                        // 隐藏加载状态
+                        document.getElementById('loading').classList.remove('active');
+                        alert('教案微调失败，请稍后重试');
+                        console.error('教案微调失败：', error);
+                    });
+            });
+        });
+        
+        // 微调教案
+        function fineTuneCourseware(subject, version, grade, topic, className, teachingAdjustment, additionalRequirements) {
+            console.log('微调教案：', { subject, version, grade, topic, className, teachingAdjustment, additionalRequirements });
+            
+            // 构建微调提示词
+            const versionMap = {
+                'pep': '人教版',
+                'moe': '部编版',
+                'bsd': '北师大版',
+                'hs': '沪教版',
+                'universal': '通用版'
+            };
+            
+            let prompt = `为乡村教师生成一份关于${topic}的教案，适合${grade}年级${subject}学科，教材版本：${versionMap[version] || '通用版'}`;
+            
+            if (className) {
+                prompt += `，班级：${className}`;
+            }
+            
+            prompt += `，包含教学目标、教学重难点、教学方法、教学过程、板书设计和作业布置`;
+            
+            if (teachingAdjustment) {
+                prompt += `。教学调整：${teachingAdjustment}`;
+            }
+            
+            if (additionalRequirements) {
+                prompt += `。其他要求：${additionalRequirements}`;
+            }
+            
+            if (typeof TRAE !== 'undefined') {
+                return TRAE.generate({
+                    prompt: prompt,
+                    model: 'trae-solo',
+                    max_tokens: 2000,
+                    temperature: 0.7,
+                    timeout: 10000 // 设置10秒超时，确保10秒内完成
+                })
+                .then(response => {
+                    console.log('教案微调成功：', response);
+                    return response;
+                })
+                .catch(error => {
+                    console.error('教案微调失败：', error);
+                    // 生成默认内容作为备选
+                    return generateDefaultFineTunedContent(subject, version, grade, topic, className, teachingAdjustment, additionalRequirements);
+                });
+            } else {
+                // 本地生成微调内容
+                return Promise.resolve(generateDefaultFineTunedContent(subject, version, grade, topic, className, teachingAdjustment, additionalRequirements));
+            }
+        }
+        
+        // 生成默认微调内容
+        function generateDefaultFineTunedContent(subject, version, grade, topic, className, teachingAdjustment, additionalRequirements) {
+            const subjectMap = {
+                'chinese': '语文',
+                'math': '数学',
+                'english': '英语',
+                'science': '科学',
+                'other': '其他'
+            };
+            
+            const versionMap = {
+                'pep': '人教版',
+                'moe': '部编版',
+                'bsd': '北师大版',
+                'hs': '沪教版',
+                'universal': '通用版'
+            };
+            
+            const gradeMap = {
+                '1': '一年级',
+                '2': '二年级',
+                '3': '三年级',
+                '4': '四年级',
+                '5': '五年级',
+                '6': '六年级'
+            };
+            
+            let content = `# ${topic} - 教案\n`;
+            content += `**教材版本：** ${versionMap[version] || '通用版'}\n\n`;
+            
+            if (className) {
+                content += `## 班级信息\n${className}\n\n`;
+            }
+            
+            content += `## 教学目标\n- 知识目标：掌握${topic}的基本概念和核心内容\n- 能力目标：培养学生分析问题和解决问题的能力\n- 情感目标：激发学生学习${topic}的兴趣\n\n`;
+            
+            content += `## 教学重难点\n- 重点：${topic}的核心概念和基本原理（基于${versionMap[version] || '通用版'}教材）\n- 难点：${topic}的应用和实际问题解决\n\n`;
+            
+            content += `## 教学方法\n- 讲授法：讲解${topic}的基本概念和原理\n- 讨论法：组织学生讨论${topic}的应用\n- 练习法：通过练习巩固所学知识\n\n`;
+            
+            content += `## 教学过程\n1. 导入（5分钟）：通过生活实例引入${topic}\n2. 新授（20分钟）：讲解${topic}的核心内容（结合${versionMap[version] || '通用版'}教材）\n3. 讨论（10分钟）：组织学生讨论${topic}的应用\n4. 练习（10分钟）：通过练习题巩固所学\n5. 总结（5分钟）：归纳${topic}的核心内容\n\n`;
+            
+            content += `## 板书设计\n- 标题：${topic}\n- 核心概念：\n- 重点内容：\n- 练习题目：\n\n`;
+            
+            content += `## 作业布置\n1. 完成课本相关习题\n2. 预习下一课内容\n`;
+            
+            if (teachingAdjustment) {
+                content += `\n## 教学调整\n${teachingAdjustment}\n`;
+            }
+            
+            if (additionalRequirements) {
+                content += `\n## 其他要求\n${additionalRequirements}\n`;
+            }
+            
+            return { content: content };
+        }
+        
+        // 生成教案内容
+        function generateCoursewareContent(subject, version, grade, topic, content, template, aiContent) {
+            const subjectMap = {
+                'chinese': '语文',
+                'math': '数学',
+                'english': '英语',
+                'science': '科学',
+                'other': '其他'
+            };
+            
+            const versionMap = {
+                'pep': '人教版',
+                'moe': '部编版',
+                'bsd': '北师大版',
+                'hs': '沪教版',
+                'universal': '通用版'
+            };
+            
+            const gradeMap = {
+                '1': '一年级',
+                '2': '二年级',
+                '3': '三年级',
+                '4': '四年级',
+                '5': '五年级',
+                '6': '六年级'
+            };
+            
+            let contentHTML = `
+                <h2 style="color: #2d3748; margin-bottom: 1.25rem; font-weight: 800;">${topic}</h2>
+                <p style="margin-bottom: 0.5rem; color: #4a5568;"><strong style="color: #4f46e5;">学科：</strong>${subjectMap[subject]}</p>
+                <p style="margin-bottom: 0.5rem; color: #4a5568;"><strong style="color: #4f46e5;">教材版本：</strong>${versionMap[version] || '通用版'}</p>
+                <p style="margin-bottom: 1.25rem; color: #4a5568;"><strong style="color: #4f46e5;">年级：</strong>${gradeMap[grade]}</p>
+                <hr style="border-color: #e2e8f0; margin-bottom: 1.5rem;">
+            `;
+            
+            // 如果有AI生成的内容，使用AI生成的内容
+            if (aiContent) {
+                contentHTML += aiContent;
+            } else {
+                // 否则使用模板内容
+                switch(template) {
+                    case 'basic':
+                        contentHTML += `
+                            <h3 style="color: #4f46e5; margin-bottom: 1rem; font-weight: 700;">教学目标</h3>
+                            <ul style="margin-bottom: 1.5rem; color: #4a5568; line-height: 1.8;">
+                                <li>了解${topic}的基本概念（基于${versionMap[version] || '通用版'}教材）</li>
+                                <li>掌握${topic}的核心内容</li>
+                                <li>能够应用所学知识解决实际问题</li>
+                            </ul>
+                            
+                            <h3 style="color: #4f46e5; margin-bottom: 1rem; font-weight: 700;">教学重点</h3>
+                            <p style="margin-bottom: 1.5rem; color: #4a5568; line-height: 1.8;">重点讲解${topic}的关键知识点，确保学生理解掌握。</p>
+                            
+                            <h3 style="color: #4f46e5; margin-bottom: 1rem; font-weight: 700;">教学难点</h3>
+                            <p style="margin-bottom: 1.5rem; color: #4a5568; line-height: 1.8;">难点在于${topic}的应用，需要通过实例帮助学生理解。</p>
+                            
+                            <h3 style="color: #4f46e5; margin-bottom: 1rem; font-weight: 700;">教学过程</h3>
+                            <ol style="margin-bottom: 1rem; color: #4a5568; line-height: 1.8;">
+                                <li>导入：通过生活实例引入${topic}</li>
+                                <li>讲解：详细讲解${topic}的知识点（结合${versionMap[version] || '通用版'}教材内容）</li>
+                                <li>练习：通过练习题巩固所学</li>
+                                <li>总结：归纳${topic}的核心内容</li>
+                            </ol>
+                        `;
+                        break;
+                    case 'interactive':
+                        contentHTML += `
+                            <h3 style="color: #4f46e5; margin-bottom: 1rem; font-weight: 700;">互动环节</h3>
+                            <p style="margin-bottom: 0.75rem; color: #4a5568; line-height: 1.8;">设计互动游戏：${topic}知识竞赛</p>
+                            <p style="margin-bottom: 1.5rem; color: #4a5568; line-height: 1.8;">小组讨论：${topic}在生活中的应用</p>
+                            
+                            <h3 style="color: #4f46e5; margin-bottom: 1rem; font-weight: 700;">教学活动</h3>
+                            <ul style="margin-bottom: 1rem; color: #4a5568; line-height: 1.8;">
+                                <li>角色扮演：模拟${topic}相关场景</li>
+                                <li>实验操作：通过实验理解${topic}</li>
+                                <li>小组合作：共同完成${topic}相关任务</li>
+                            </ul>
+                        `;
+                        break;
+                    case 'visual':
+                        contentHTML += `
+                            <h3 style="color: #4f46e5; margin-bottom: 1rem; font-weight: 700;">视觉资料</h3>
+                            <p style="margin-bottom: 0.5rem; color: #4a5568; line-height: 1.8;">图片展示：${topic}相关图片（基于${versionMap[version] || '通用版'}教材）</p>
+                            <p style="margin-bottom: 0.5rem; color: #4a5568; line-height: 1.8;">视频播放：${topic}教学视频</p>
+                            <p style="margin-bottom: 1.5rem; color: #4a5568; line-height: 1.8;">图表分析：${topic}数据可视化</p>
+                            
+                            <h3 style="color: #4f46e5; margin-bottom: 1rem; font-weight: 700;">思维导图</h3>
+                            <p style="margin-bottom: 1rem; color: #4a5568; line-height: 1.8;">通过思维导图梳理${topic}的知识结构</p>
+                        `;
+                        break;
+                    case 'quiz':
+                        contentHTML += `
+                            <h3 style="color: #4f46e5; margin-bottom: 1rem; font-weight: 700;">课堂测验</h3>
+                            <ol style="margin-bottom: 1.5rem; color: #4a5568; line-height: 1.8;">
+                                <li>选择题：关于${topic}的基本概念</li>
+                                <li>填空题：${topic}的核心内容</li>
+                                <li>简答题：${topic}的应用</li>
+                            </ol>
+                            
+                            <h3 style="color: #4f46e5; margin-bottom: 1rem; font-weight: 700;">作业布置</h3>
+                            <p style="margin-bottom: 1rem; color: #4a5568; line-height: 1.8;">完成${topic}相关的练习题，巩固所学知识。</p>
+                        `;
+                        break;
+                }
+            }
+            
+            if (content) {
+                contentHTML += `
+                    <hr style="border-color: #e2e8f0; margin: 1.5rem 0;">
+                    <h3 style="color: #4f46e5; margin-bottom: 1rem; font-weight: 700;">教师要求</h3>
+                    <p style="color: #4a5568; line-height: 1.8;">${content}</p>
+                `;
+            }
+            
+            return contentHTML;
+        }
+        
+        // 导出教案
+        function exportCourseware(content) {
+            const blob = new Blob([content], { type: 'text/html' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = '教案_' + new Date().toISOString().slice(0, 10) + '.html';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            alert('教案导出成功！');
+        }
+        
+        // 生成分享链接
+        function generateShareLink(content) {
+            // 由于是本地环境，我们使用URL编码来生成分享链接
+            // 在实际生产环境中，应该将教案内容存储到服务器并生成唯一链接
+            const encodedContent = encodeURIComponent(content);
+            const shareId = 'share_' + Date.now() + '_' + Math.floor(Math.random() * 10000);
+            
+            // 存储到本地存储，模拟服务器存储
+            localStorage.setItem(shareId, content);
+            
+            // 生成分享链接
+            const baseUrl = window.location.origin + window.location.pathname;
+            const shareLink = baseUrl + '?share=' + shareId;
+            
+            return shareLink;
+        }
+        
+        // 打印教案
+        function printCourseware(content) {
+            const printWindow = window.open('', '_blank');
+            printWindow.document.write(`
+                <!DOCTYPE html>
+                <html lang="zh-CN">
+                <head>
+                    <meta charset="UTF-8">
+                    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                    <title>教案打印</title>
+                    <style>
+                        body {
+                            font-family: 'Microsoft YaHei', Arial, sans-serif;
+                            line-height: 1.6;
+                            color: #333;
+                            margin: 20px;
+                        }
+                        h1, h2, h3 {
+                            color: #4f46e5;
+                            margin-top: 20px;
+                            margin-bottom: 10px;
+                        }
+                        h1 {
+                            font-size: 24px;
+                            text-align: center;
+                        }
+                        h2 {
+                            font-size: 20px;
+                            border-bottom: 2px solid #e2e8f0;
+                            padding-bottom: 5px;
+                        }
+                        h3 {
+                            font-size: 16px;
+                        }
+                        p, ul, ol {
+                            margin-bottom: 15px;
+                        }
+                        ul, ol {
+                            padding-left: 30px;
+                        }
+                        hr {
+                            border: 1px solid #e2e8f0;
+                            margin: 20px 0;
+                        }
+                        @media print {
+                            body {
+                                margin: 0;
+                                padding: 20px;
+                            }
+                        }
+                    </style>
+                </head>
+                <body>
+                    ${content}
+                </body>
+                </html>
+            `);
+            printWindow.document.close();
+            printWindow.focus();
+            printWindow.print();
+            printWindow.close();
+        }
+        
+        // 检查是否有分享链接参数
+        function checkShareLink() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const shareId = urlParams.get('share');
+            
+            if (shareId) {
+                const sharedContent = localStorage.getItem(shareId);
+                if (sharedContent) {
+                    // 显示分享的教案内容
+                    document.getElementById('resultContent').innerHTML = sharedContent;
+                    document.getElementById('resultSection').classList.add('active');
+                    
+                    // 隐藏生成表单
+                    document.getElementById('coursewareForm').style.display = 'none';
+                    
+                    // 修改页面标题
+                    document.querySelector('.generator-header h2').textContent = '分享的教案';
+                    document.querySelector('.generator-header p').textContent = '由其他教师分享的教案内容';
+                }
+            }
+        }
+        
+        // 显示提示框
+        function showToast(message, type = 'info') {
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            toast.textContent = message;
+            toast.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                padding: 1rem 1.5rem;
+                border-radius: 8px;
+                color: white;
+                font-weight: 600;
+                z-index: 10000;
+                animation: slideIn 0.3s ease;
+                box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            `;
+            
+            // 设置不同类型的背景色
+            if (type === 'success') {
+                toast.style.backgroundColor = '#10b981';
+            } else if (type === 'error') {
+                toast.style.backgroundColor = '#ef4444';
+            } else {
+                toast.style.backgroundColor = '#3b82f6';
+            }
+            
+            // 添加动画
+            const style = document.createElement('style');
+            style.textContent = `
+                @keyframes slideIn {
+                    from { transform: translateX(100%); opacity: 0; }
+                    to { transform: translateX(0); opacity: 1; }
+                }
+            `;
+            document.head.appendChild(style);
+            
+            document.body.appendChild(toast);
+            
+            // 3秒后移除
+            setTimeout(() => {
+                toast.style.animation = 'slideIn 0.3s ease reverse';
+                setTimeout(() => {
+                    document.body.removeChild(toast);
+                    document.head.removeChild(style);
+                }, 300);
+            }, 3000);
+        }
+        
+        // 页面加载时检查分享链接
+        checkShareLink();
+    </script>
+</body>
+</html>
