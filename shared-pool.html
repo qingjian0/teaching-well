@@ -1,0 +1,759 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>教研群共享池 - 教案活井</title>
+    <link rel="stylesheet" href="css/style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.trae.com/sdk/v1/trae-solo.js"></script>
+    <script src="js/review-manager.js"></script>
+</head>
+<body>
+    <header>
+        <div class="header-container">
+            <h1>教案活井</h1>
+            <div class="mobile-menu-toggle">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+            <nav class="main-nav">
+                <ul>
+                    <li><a href="index.html">首页</a></li>
+                    <li><a href="courseware.html">教案设计</a></li>
+                    <li><a href="keypoints.html">重难点解析</a></li>
+                    <li><a href="grading.html">作业批改</a></li>
+                    <li><a href="resources.html">教学资源</a></li>
+                    <li><a href="template-library.html">教案模板</a></li>
+                    <li><a href="training.html">教师培训</a></li>
+                    <li><a href="shared-pool.html" class="active">共享池</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+    
+    <main>
+        <section class="hero small">
+            <h2>教研群共享池</h2>
+            <p>分享优质教案，学习他人经验，共同提升教学质量</p>
+        </section>
+        
+        <section class="shared-pool-section">
+            <div class="shared-pool-header">
+                <h3>📚 共享教案库</h3>
+                <div class="shared-pool-stats">
+                    <div class="stat-item">
+                        <div class="stat-number" id="total-plans">0</div>
+                        <div class="stat-label">分享总数</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number" id="total-views">0</div>
+                        <div class="stat-label">总浏览量</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number" id="total-downloads">0</div>
+                        <div class="stat-label">总下载量</div>
+                    </div>
+                </div>
+            </div>
+            
+            <button class="btn-primary" id="share-plan-btn" style="margin-bottom: 2rem;">
+                ✨ 分享我的教案
+            </button>
+            
+            <div class="shared-pool-tabs">
+                <button class="pool-tab active" data-tab="all">全部教案</button>
+                <button class="pool-tab" data-tab="popular">热门教案</button>
+                <button class="pool-tab" data-tab="high-quality">优质教案</button>
+                <button class="pool-tab" data-tab="certified">⭐ 王明认证</button>
+                <button class="pool-tab" data-tab="mine">我的分享</button>
+            </div>
+            
+            <div id="tab-all" class="tab-content active">
+                <div class="shared-pool-search">
+                    <div class="search-box">
+                        <span class="search-icon">🔍</span>
+                        <input type="text" id="search-input" placeholder="搜索教案标题、作者、学校或标签...">
+                    </div>
+                </div>
+                
+                <div class="shared-pool-filters">
+                    <div class="filter-group">
+                        <label>学科</label>
+                        <select id="filter-subject">
+                            <option value="">全部学科</option>
+                            <option value="chinese">语文</option>
+                            <option value="math">数学</option>
+                            <option value="english">英语</option>
+                            <option value="science">科学</option>
+                            <option value="other">其他</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label>年级</label>
+                        <select id="filter-grade">
+                            <option value="">全部年级</option>
+                            <option value="1">一年级</option>
+                            <option value="2">二年级</option>
+                            <option value="3">三年级</option>
+                            <option value="4">四年级</option>
+                            <option value="5">五年级</option>
+                            <option value="6">六年级</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label>排序</label>
+                        <select id="filter-sort">
+                            <option value="recent">最新分享</option>
+                            <option value="rating">评分最高</option>
+                            <option value="downloads">下载最多</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="shared-pool-grid" id="plans-grid">
+                </div>
+            </div>
+            
+            <div id="tab-popular" class="tab-content">
+                <div class="shared-pool-grid" id="popular-plans-grid">
+                </div>
+            </div>
+            
+            <div id="tab-high-quality" class="tab-content">
+                <div class="shared-pool-grid" id="high-quality-plans-grid">
+                </div>
+            </div>
+            
+            <div id="tab-certified" class="tab-content">
+                <div class="shared-pool-grid" id="certified-plans-grid">
+                </div>
+            </div>
+            
+            <div id="tab-mine" class="tab-content">
+                <div class="shared-pool-grid" id="my-plans-grid">
+                </div>
+            </div>
+        </section>
+        
+        <section class="user-settings-section">
+            <h4>👤 我的信息设置</h4>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>教师姓名</label>
+                    <input type="text" id="user-name" placeholder="请输入您的姓名">
+                </div>
+                <div class="form-group">
+                    <label>所属学校</label>
+                    <input type="text" id="user-school" placeholder="请输入学校名称">
+                </div>
+            </div>
+            <button class="btn-primary" id="save-user-info" style="margin-top: 1rem;">保存信息</button>
+        </section>
+    </main>
+    
+    <footer>
+        <div class="footer-container">
+            <div class="footer-info">
+                <h3>教案活井</h3>
+                <p>专注于教案设计的轻量级智能教学工具</p>
+            </div>
+            <div class="footer-links">
+                <h4>快速链接</h4>
+                <ul>
+                    <li><a href="index.html">首页</a></li>
+                    <li><a href="courseware.html">教案设计</a></li>
+                    <li><a href="resources.html">教学资源</a></li>
+                    <li><a href="template-library.html">教案模板</a></li>
+                    <li><a href="shared-pool.html">共享池</a></li>
+                </ul>
+            </div>
+            <div class="footer-contact">
+                <h4>了解更多</h4>
+                <p>轻量级架构，开箱即用</p>
+                <p>专注功能，简洁高效</p>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2026 教案活井 - 专注教案设计</p>
+        </div>
+    </footer>
+    
+    <script src="js/network-manager.js"></script>
+    <script src="js/feedback-manager.js"></script>
+    <script src="js/shared-pool-manager.js"></script>
+    <script>
+        // 页面初始化
+        document.addEventListener('DOMContentLoaded', async function() {
+            // 等待 SharedPoolManager 初始化
+            await new Promise(resolve => setTimeout(resolve, 100));
+            
+            // 加载统计数据
+            updateStats();
+            
+            // 初始化用户信息
+            initUserSettings();
+            
+            // 渲染所有教案
+            renderPlans();
+            
+            // 渲染热门教案
+            renderPopularPlans();
+            
+            // 渲染优质教案
+            renderHighQualityPlans();
+            
+            // 渲染王明认证教案
+            renderCertifiedPlans();
+            
+            // 渲染我的教案
+            renderMyPlans();
+            
+            // 绑定事件
+            bindEvents();
+        });
+        
+        // 更新统计数据
+        function updateStats() {
+            const plans = SharedPoolManager.getAllPlans();
+            const totalViews = plans.reduce((sum, p) => sum + p.viewCount, 0);
+            const totalDownloads = plans.reduce((sum, p) => sum + p.downloadCount, 0);
+            
+            document.getElementById('total-plans').textContent = plans.length;
+            document.getElementById('total-views').textContent = totalViews;
+            document.getElementById('total-downloads').textContent = totalDownloads;
+        }
+        
+        // 初始化用户设置
+        function initUserSettings() {
+            const user = SharedPoolManager.currentUser;
+            document.getElementById('user-name').value = user.name || '';
+            document.getElementById('user-school').value = user.school || '';
+        }
+        
+        // 绑定事件
+        function bindEvents() {
+            // Tab 切换
+            document.querySelectorAll('.pool-tab').forEach(tab => {
+                tab.addEventListener('click', function() {
+                    const tabId = this.getAttribute('data-tab');
+                    
+                    document.querySelectorAll('.pool-tab').forEach(t => t.classList.remove('active'));
+                    document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+                    
+                    this.classList.add('active');
+                    document.getElementById('tab-' + tabId).classList.add('active');
+                });
+            });
+            
+            // 搜索和筛选
+            document.getElementById('search-input').addEventListener('input', renderPlans);
+            document.getElementById('filter-subject').addEventListener('change', renderPlans);
+            document.getElementById('filter-grade').addEventListener('change', renderPlans);
+            document.getElementById('filter-sort').addEventListener('change', renderPlans);
+            
+            // 分享教案
+            document.getElementById('share-plan-btn').addEventListener('click', openShareModal);
+            
+            // 保存用户信息
+            document.getElementById('save-user-info').addEventListener('click', saveUserInfo);
+        }
+        
+        // 渲染教案列表
+        function renderPlans() {
+            const searchQuery = document.getElementById('search-input').value;
+            const subjectFilter = document.getElementById('filter-subject').value;
+            const gradeFilter = document.getElementById('filter-grade').value;
+            const sortBy = document.getElementById('filter-sort').value;
+            
+            const filters = {
+                subject: subjectFilter,
+                grade: gradeFilter,
+                sortBy: sortBy
+            };
+            
+            const plans = SharedPoolManager.searchPlans(searchQuery, filters);
+            const grid = document.getElementById('plans-grid');
+            
+            if (plans.length === 0) {
+                grid.innerHTML = `
+                    <div class="empty-pool-state" style="grid-column: 1 / -1;">
+                        <div class="empty-icon">📭</div>
+                        <h4>暂无符合条件的教案</h4>
+                        <p>试试调整筛选条件，或成为第一个分享者！</p>
+                        <button class="btn-primary" onclick="document.getElementById('share-plan-btn').click()">分享教案</button>
+                    </div>
+                `;
+                return;
+            }
+            
+            grid.innerHTML = plans.map(plan => createPlanCard(plan)).join('');
+        }
+        
+        // 渲染热门教案
+        function renderPopularPlans() {
+            const plans = SharedPoolManager.getPopularPlans();
+            const grid = document.getElementById('popular-plans-grid');
+            
+            if (plans.length === 0) {
+                grid.innerHTML = `
+                    <div class="empty-pool-state" style="grid-column: 1 / -1;">
+                        <div class="empty-icon">🔥</div>
+                        <h4>暂无热门教案</h4>
+                        <p>快来分享第一份教案吧！</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            grid.innerHTML = plans.map(plan => createPlanCard(plan)).join('');
+        }
+        
+        // 渲染优质教案
+        function renderHighQualityPlans() {
+            const plans = SharedPoolManager.getHighQualityPlans();
+            const grid = document.getElementById('high-quality-plans-grid');
+            
+            if (plans.length === 0) {
+                grid.innerHTML = `
+                    <div class="empty-pool-state" style="grid-column: 1 / -1;">
+                        <div class="empty-icon">⭐</div>
+                        <h4>暂无优质教案</h4>
+                        <p>评分达到4.5分以上的教案将展示在这里</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            grid.innerHTML = plans.map(plan => createPlanCard(plan)).join('');
+        }
+        
+        // 渲染王明认证教案
+        function renderCertifiedPlans() {
+            const plans = ReviewManager.reviewData.approvedSharedPlans
+                .map(id => SharedPoolManager.getPlanById(id))
+                .filter(plan => plan !== undefined);
+            const grid = document.getElementById('certified-plans-grid');
+            
+            if (plans.length === 0) {
+                grid.innerHTML = `
+                    <div class="empty-pool-state" style="grid-column: 1 / -1;">
+                        <div class="empty-icon">🏆</div>
+                        <h4>暂无王明认证教案</h4>
+                        <p>通过专家审核的优质教案将展示在这里</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            grid.innerHTML = plans.map(plan => createPlanCard(plan)).join('');
+        }
+        
+        // 渲染我的教案
+        function renderMyPlans() {
+            const plans = SharedPoolManager.getMySharedPlans();
+            const grid = document.getElementById('my-plans-grid');
+            
+            if (plans.length === 0) {
+                grid.innerHTML = `
+                    <div class="empty-pool-state" style="grid-column: 1 / -1;">
+                        <div class="empty-icon">📤</div>
+                        <h4>您还没有分享教案</h4>
+                        <p>分享您的教案，帮助更多乡村教师</p>
+                        <button class="btn-primary" onclick="document.getElementById('share-plan-btn').click()">立即分享</button>
+                    </div>
+                `;
+                return;
+            }
+            
+            grid.innerHTML = plans.map(plan => createPlanCard(plan, true)).join('');
+        }
+        
+        // 创建教案卡片
+        function createPlanCard(plan, showDelete = false) {
+            const authorInitial = plan.author ? plan.author.charAt(0) : '?';
+            const isCertified = ReviewManager.isSharedPlanApproved(plan.id);
+            
+            return `
+                <div class="shared-plan-card ${isCertified ? 'shared-plan-certified' : ''}">
+                    <div class="shared-plan-header">
+                        <h4>
+                            ${escapeHtml(plan.title)}
+                            ${isCertified ? '<span class="wangming-badge-small"><span class="wangming-badge-icon">✓</span>王明认证</span>' : ''}
+                        </h4>
+                        <div class="shared-plan-meta">
+                            <span>📖 ${SharedPoolManager.getSubjectName(plan.subject)}</span>
+                            <span>📚 ${SharedPoolManager.getGradeName(plan.grade)}</span>
+                            <span>📍 ${escapeHtml(plan.region || '未知地区')}</span>
+                        </div>
+                    </div>
+                    <div class="shared-plan-body">
+                        <div class="shared-plan-author">
+                            <div class="author-avatar">${authorInitial}</div>
+                            <div class="author-info">
+                                <div class="author-name">${escapeHtml(plan.author)}</div>
+                                <div class="author-school">${escapeHtml(plan.school)}</div>
+                            </div>
+                        </div>
+                        <div class="shared-plan-tags">
+                            ${plan.tags.map(tag => `<span class="tag">${escapeHtml(tag)}</span>`).join('')}
+                        </div>
+                        <div class="shared-plan-stats">
+                            <div class="shared-plan-stat">⭐ ${plan.rating.toFixed(1)}</div>
+                            <div class="shared-plan-stat">👁️ ${plan.viewCount}</div>
+                            <div class="shared-plan-stat">⬇️ ${plan.downloadCount}</div>
+                            ${isCertified ? '<div class="shared-plan-stat" style="color: #f59e0b; font-weight: 600;">✓ 王明认证</div>' : ''}
+                        </div>
+                    </div>
+                    <div class="shared-plan-footer">
+                        <button class="shared-plan-btn view" onclick="viewPlanDetail('${plan.id}')">查看详情</button>
+                        <button class="shared-plan-btn download" onclick="downloadPlan('${plan.id}')">收藏下载</button>
+                        ${showDelete ? `<button class="shared-plan-btn" style="background: linear-gradient(135deg, #e53e3e 0%, #fc8181 100%);" onclick="deleteMyPlan('${plan.id}')">删除</button>` : ''}
+                    </div>
+                </div>
+            `;
+        }
+        
+        // 查看教案详情
+        function viewPlanDetail(id) {
+            const plan = SharedPoolManager.viewPlan(id);
+            if (!plan) return;
+            
+            const modal = document.createElement('div');
+            modal.style.cssText = `
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: rgba(0, 0, 0, 0.5);
+                z-index: 10001;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                overflow-y: auto;
+                padding: 2rem;
+            `;
+            
+            modal.innerHTML = `
+                <div style="
+                    background: white;
+                    padding: 2rem;
+                    border-radius: 12px;
+                    max-width: 900px;
+                    width: 100%;
+                    max-height: 90vh;
+                    overflow-y: auto;
+                    position: relative;
+                    ${ReviewManager.isSharedPlanApproved(plan.id) ? 'border: 3px solid #f59e0b;' : ''}
+                ">
+                    <button style="
+                        position: absolute;
+                        top: 1rem;
+                        right: 1rem;
+                        background: none;
+                        border: none;
+                        font-size: 2rem;
+                        cursor: pointer;
+                        color: #666;
+                        width: 40px;
+                        height: 40px;
+                    " onclick="this.closest('div').parentElement.parentElement.remove()">&times;</button>
+                    
+                    <div style="margin-bottom: 1.5rem;">
+                        <h2 style="color: #2d3748; margin-bottom: 1rem; display: flex; align-items: center; gap: 0.75rem;">
+                            ${escapeHtml(plan.title)}
+                            ${ReviewManager.isSharedPlanApproved(plan.id) ? '<span class="wangming-badge"><span class="wangming-badge-icon">✓</span><span class="wangming-badge-text">王明认证</span></span>' : ''}
+                        </h2>
+                        <div style="display: flex; gap: 1rem; flex-wrap: wrap; margin-bottom: 1rem;">
+                            <span style="padding: 0.5rem 1rem; background: #e0e7ff; border-radius: 6px; color: #4f46e5;">
+                                ${SharedPoolManager.getSubjectName(plan.subject)} · ${SharedPoolManager.getGradeName(plan.grade)}
+                            </span>
+                            <span style="padding: 0.5rem 1rem; background: #c6f6d5; border-radius: 6px; color: #276749;">
+                                ⭐ ${plan.rating.toFixed(1)}
+                            </span>
+                            <span style="padding: 0.5rem 1rem; background: #feebc8; border-radius: 6px; color: #c05621;">
+                                👁️ ${plan.viewCount} · ⬇️ ${plan.downloadCount}
+                            </span>
+                            ${ReviewManager.isSharedPlanApproved(plan.id) ? '<span style="padding: 0.5rem 1rem; background: linear-gradient(135deg, #f59e0b, #fbbf24); border-radius: 6px; color: white; font-weight: 600;">✓ 王明认证 - 经专家审核通过</span>' : ''}
+                        </div>
+                        <div style="color: #718096; font-size: 0.9rem;">
+                            <strong>作者：</strong>${escapeHtml(plan.author)} &nbsp;&nbsp;
+                            <strong>学校：</strong>${escapeHtml(plan.school)} &nbsp;&nbsp;
+                            <strong>地区：</strong>${escapeHtml(plan.region || '未知')} &nbsp;&nbsp;
+                            <strong>分享时间：</strong>${new Date(plan.createdAt).toLocaleDateString('zh-CN')}
+                        </div>
+                    </div>
+                    
+                    <div style="
+                        background: #f7fafc;
+                        padding: 1.5rem;
+                        border-radius: 8px;
+                        margin-bottom: 1.5rem;
+                        white-space: pre-wrap;
+                        line-height: 1.8;
+                        border-left: 4px solid #4f46e5;
+                    ">${escapeHtml(plan.content)}</div>
+                    
+                    <div style="display: flex; gap: 1rem; justify-content: flex-end;">
+                        <button onclick="this.closest('div').parentElement.parentElement.remove()" style="
+                            padding: 0.75rem 1.5rem;
+                            background: #e2e8f0;
+                            color: #4a5568;
+                            border: none;
+                            border-radius: 8px;
+                            cursor: pointer;
+                            font-size: 1rem;
+                        ">关闭</button>
+                        <button onclick="downloadPlan('${plan.id}'); this.closest('div').parentElement.parentElement.remove();" style="
+                            padding: 0.75rem 1.5rem;
+                            background: linear-gradient(135deg, #48bb78 0%, #68d391 100%);
+                            color: white;
+                            border: none;
+                            border-radius: 8px;
+                            cursor: pointer;
+                            font-size: 1rem;
+                        ">收藏下载</button>
+                    </div>
+                </div>
+            `;
+            
+            document.body.appendChild(modal);
+            
+            modal.addEventListener('click', function(e) {
+                if (e.target === modal) {
+                    modal.remove();
+                }
+            });
+        }
+        
+        // 下载教案
+        async function downloadPlan(id) {
+            const success = await SharedPoolManager.downloadPlan(id);
+            if (success) {
+                showToast('教案已收藏到本地！');
+                updateStats();
+                renderPlans();
+            }
+        }
+        
+        // 删除我的教案
+        async function deleteMyPlan(id) {
+            if (confirm('确定要删除这份教案吗？')) {
+                const success = await SharedPoolManager.deleteMyPlan(id);
+                if (success) {
+                    showToast('教案已删除');
+                    updateStats();
+                    renderMyPlans();
+                    renderPlans();
+                }
+            }
+        }
+        
+        // 打开分享模态框
+        function openShareModal() {
+            const modal = document.createElement('div');
+            modal.style.cssText = `
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: rgba(0, 0, 0, 0.5);
+                z-index: 10001;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                overflow-y: auto;
+                padding: 2rem;
+            `;
+            
+            modal.innerHTML = `
+                <div class="share-modal" style="
+                    background: white;
+                    padding: 2rem;
+                    border-radius: 12px;
+                    max-width: 700px;
+                    width: 100%;
+                    max-height: 90vh;
+                    overflow-y: auto;
+                    position: relative;
+                ">
+                    <button style="
+                        position: absolute;
+                        top: 1rem;
+                        right: 1rem;
+                        background: none;
+                        border: none;
+                        font-size: 2rem;
+                        cursor: pointer;
+                        color: #666;
+                        width: 40px;
+                        height: 40px;
+                    " onclick="this.closest('div').parentElement.parentElement.remove()">&times;</button>
+                    
+                    <h2 style="color: #2d3748; margin-bottom: 1.5rem;">分享我的教案</h2>
+                    
+                    <div class="form-group">
+                        <label>教案标题 <span style="color: #e53e3e;">*</span></label>
+                        <input type="text" id="share-title" placeholder="例如：三年级数学 - 分数的初步认识">
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>学科 <span style="color: #e53e3e;">*</span></label>
+                            <select id="share-subject">
+                                <option value="">请选择学科</option>
+                                <option value="chinese">语文</option>
+                                <option value="math">数学</option>
+                                <option value="english">英语</option>
+                                <option value="science">科学</option>
+                                <option value="other">其他</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>年级 <span style="color: #e53e3e;">*</span></label>
+                            <select id="share-grade">
+                                <option value="">请选择年级</option>
+                                <option value="1">一年级</option>
+                                <option value="2">二年级</option>
+                                <option value="3">三年级</option>
+                                <option value="4">四年级</option>
+                                <option value="5">五年级</option>
+                                <option value="6">六年级</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>标签（用逗号分隔）</label>
+                        <input type="text" id="share-tags" placeholder="例如：分数, 数学, 动手操作">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>教案内容 <span style="color: #e53e3e;">*</span></label>
+                        <textarea id="share-content" placeholder="请粘贴或输入您的教案内容..."></textarea>
+                    </div>
+                    
+                    <div style="display: flex; gap: 1rem; justify-content: flex-end; margin-top: 1.5rem;">
+                        <button onclick="this.closest('div').parentElement.parentElement.remove()" style="
+                            padding: 0.75rem 1.5rem;
+                            background: #e2e8f0;
+                            color: #4a5568;
+                            border: none;
+                            border-radius: 8px;
+                            cursor: pointer;
+                            font-size: 1rem;
+                        ">取消</button>
+                        <button id="submit-share" style="
+                            padding: 0.75rem 1.5rem;
+                            background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+                            color: white;
+                            border: none;
+                            border-radius: 8px;
+                            cursor: pointer;
+                            font-size: 1rem;
+                        ">确认分享</button>
+                    </div>
+                </div>
+            `;
+            
+            document.body.appendChild(modal);
+            
+            document.getElementById('submit-share').addEventListener('click', async function() {
+                const title = document.getElementById('share-title').value.trim();
+                const subject = document.getElementById('share-subject').value;
+                const grade = document.getElementById('share-grade').value;
+                const tags = document.getElementById('share-tags').value.split(',').map(t => t.trim()).filter(t => t);
+                const content = document.getElementById('share-content').value.trim();
+                
+                if (!title || !subject || !grade || !content) {
+                    alert('请填写必填项（标题、学科、年级、内容）');
+                    return;
+                }
+                
+                await SharedPoolManager.sharePlan({
+                    title,
+                    subject,
+                    grade,
+                    tags,
+                    content
+                });
+                
+                modal.remove();
+                showToast('教案分享成功！');
+                updateStats();
+                renderPlans();
+                renderMyPlans();
+                
+                // 切换到我的分享标签
+                document.querySelector('.pool-tab[data-tab="mine"]').click();
+            });
+            
+            modal.addEventListener('click', function(e) {
+                if (e.target === modal) {
+                    modal.remove();
+                }
+            });
+        }
+        
+        // 保存用户信息
+        function saveUserInfo() {
+            const name = document.getElementById('user-name').value.trim();
+            const school = document.getElementById('user-school').value.trim();
+            
+            if (!name) {
+                alert('请输入教师姓名');
+                return;
+            }
+            
+            SharedPoolManager.saveCurrentUser({ name, school });
+            showToast('用户信息已保存！');
+        }
+        
+        // HTML 转义
+        function escapeHtml(text) {
+            if (!text) return '';
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+        
+        // 显示提示消息
+        function showToast(message) {
+            const toast = document.createElement('div');
+            toast.style.cssText = `
+                position: fixed;
+                bottom: 2rem;
+                right: 2rem;
+                padding: 1rem 1.5rem;
+                background: linear-gradient(135deg, #48bb78 0%, #68d391 100%);
+                color: white;
+                border-radius: 8px;
+                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+                z-index: 10002;
+                animation: slideIn 0.3s ease;
+            `;
+            toast.textContent = message;
+            
+            document.body.appendChild(toast);
+            
+            setTimeout(() => {
+                toast.style.animation = 'slideOut 0.3s ease';
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        }
+    </script>
+    <style>
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateX(20px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+        @keyframes slideOut {
+            from { opacity: 1; transform: translateX(0); }
+            to { opacity: 0; transform: translateX(20px); }
+        }
+    </style>
+</body>
+</html>

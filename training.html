@@ -1,0 +1,828 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>教师培训 - 教案活井</title>
+    <link rel="stylesheet" href="css/style.css">
+    <!-- 引入Chart.js用于数据可视化 -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- 引入TRAE SOLO SDK用于AI能力 -->
+    <script src="https://cdn.trae.com/sdk/v1/trae-solo.js"></script>
+    <style>
+        /* 培训页面样式 */
+        .training-section {
+            margin-bottom: 3rem;
+        }
+        
+        .training-section h2 {
+            text-align: center;
+            margin-bottom: 2rem;
+            font-size: 2rem;
+            color: #2d3748;
+        }
+        
+        .training-tabs {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 2rem;
+            border-bottom: 2px solid #4f46e5;
+        }
+        
+        .training-tab {
+            padding: 1rem 2rem;
+            background-color: #f7fafc;
+            border: 1px solid #e2e8f0;
+            border-bottom: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: bold;
+            color: #4a5568;
+        }
+        
+        .training-tab.active {
+            background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+            color: white;
+            border-color: #4f46e5;
+        }
+        
+        .training-tab:hover {
+            background-color: #f0f4ff;
+        }
+        
+        .training-tab.active:hover {
+            background: linear-gradient(135deg, #4338ca 0%, #6d28d9 100%);
+        }
+        
+        .tab-content {
+            background-color: white;
+            padding: 2.5rem;
+            border-radius: 0 0 12px 12px;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
+            border: 1px solid #e2e8f0;
+            border-top: none;
+        }
+        
+        .tab-panel {
+            display: none;
+        }
+        
+        .tab-panel.active {
+            display: block;
+        }
+        
+        .tab-panel h3 {
+            color: #2d3748;
+            font-weight: 700;
+            margin-bottom: 2rem;
+        }
+        
+        /* 培训课程样式 */
+        .course-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+        
+        .course-card {
+            background-color: #f7fafc;
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            border: 1px solid #e2e8f0;
+        }
+        
+        .course-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1);
+        }
+        
+        .course-card h3 {
+            margin-bottom: 1rem;
+            color: #4f46e5;
+            font-weight: 700;
+        }
+        
+        .course-card .course-meta {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 1rem;
+            font-size: 0.9rem;
+            color: #4a5568;
+        }
+        
+        .course-card .course-description {
+            margin-bottom: 1.5rem;
+            line-height: 1.6;
+            color: #374151;
+        }
+        
+        .course-card .course-progress {
+            margin-bottom: 1rem;
+        }
+        
+        .progress-bar {
+            width: 100%;
+            height: 10px;
+            background-color: #e2e8f0;
+            border-radius: 5px;
+            overflow: hidden;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #4f46e5 0%, #7c3aed 100%);
+            border-radius: 5px;
+            transition: width 0.3s ease;
+        }
+        
+        .course-card p {
+            margin-top: 0.5rem;
+            font-size: 0.9rem;
+            color: #4a5568;
+        }
+        
+        /* 学习资料样式 */
+        .resource-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+        
+        .resource-card {
+            background-color: #f7fafc;
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            border: 1px solid #e2e8f0;
+        }
+        
+        .resource-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1);
+        }
+        
+        .resource-card h3 {
+            margin-bottom: 1rem;
+            color: #4f46e5;
+            font-weight: 700;
+        }
+        
+        .resource-card .resource-meta {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 1rem;
+            font-size: 0.9rem;
+            color: #4a5568;
+        }
+        
+        .resource-card .resource-description {
+            margin-bottom: 1.5rem;
+            line-height: 1.6;
+            color: #374151;
+        }
+        
+        /* 经验分享样式 */
+        .experience-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+        }
+        
+        .experience-card {
+            background-color: #f7fafc;
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            border: 1px solid #e2e8f0;
+        }
+        
+        .experience-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1);
+        }
+        
+        .experience-card .author-info {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+        
+        .author-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-weight: bold;
+            margin-right: 1rem;
+        }
+        
+        .author-details h4 {
+            margin-bottom: 0.25rem;
+            color: #2d3748;
+            font-weight: 700;
+        }
+        
+        .author-details p {
+            font-size: 0.9rem;
+            color: #4a5568;
+            margin: 0;
+        }
+        
+        .experience-content {
+            margin-bottom: 1rem;
+            line-height: 1.6;
+            color: #374151;
+        }
+        
+        .experience-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+        
+        .tag {
+            background-color: #eef2ff;
+            color: #4f46e5;
+            padding: 0.25rem 0.75rem;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+        
+        /* 评估样式 */
+        .assessment-form {
+            background-color: #f7fafc;
+            padding: 2.5rem;
+            border-radius: 12px;
+            border: 1px solid #e2e8f0;
+        }
+        
+        .assessment-form h3 {
+            margin-bottom: 1.5rem;
+            color: #4f46e5;
+            font-weight: 700;
+        }
+        
+        .assessment-section {
+            margin-bottom: 2rem;
+        }
+        
+        .assessment-section h4 {
+            margin-bottom: 1rem;
+            color: #2d3748;
+            font-weight: 700;
+        }
+        
+        .question-item {
+            margin-bottom: 1.5rem;
+            padding: 1.5rem;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            border: 1px solid #e2e8f0;
+        }
+        
+        .question-item h5 {
+            margin-bottom: 1rem;
+            color: #374151;
+            font-weight: 600;
+        }
+        
+        .option-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+        
+        .option-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem;
+            border-radius: 6px;
+            transition: background-color 0.2s ease;
+        }
+        
+        .option-item:hover {
+            background-color: #f7fafc;
+        }
+        
+        .option-item input[type="radio"] {
+            width: auto;
+            accent-color: #4f46e5;
+        }
+        
+        .option-item label {
+            color: #374151;
+            cursor: pointer;
+        }
+        
+        .form-actions {
+            display: flex;
+            gap: 1rem;
+            margin-top: 2rem;
+            flex-wrap: wrap;
+        }
+        
+        .assessment-results {
+            background-color: #f7fafc;
+            padding: 2.5rem;
+            border-radius: 12px;
+            margin-top: 2rem;
+            border: 1px solid #e2e8f0;
+        }
+        
+        .assessment-results h3 {
+            margin-bottom: 1.5rem;
+            color: #4f46e5;
+            font-weight: 700;
+        }
+        
+        .result-summary {
+            background-color: white;
+            padding: 1.5rem;
+            border-radius: 10px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            margin-bottom: 1.5rem;
+            border: 1px solid #e2e8f0;
+        }
+        
+        .result-score {
+            font-size: 2rem;
+            font-weight: bold;
+            background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-align: center;
+            margin-bottom: 1rem;
+        }
+        
+        .result-summary h4 {
+            color: #2d3748;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+        
+        .result-analysis {
+            line-height: 1.6;
+            color: #374151;
+        }
+        
+        .recommendation-list {
+            margin-top: 1.5rem;
+        }
+        
+        .recommendation-list h4 {
+            margin-bottom: 1rem;
+            color: #2d3748;
+            font-weight: 700;
+        }
+        
+        .recommendation-list ul {
+            margin-left: 1.5rem;
+            color: #374151;
+        }
+        
+        .recommendation-list li {
+            margin-bottom: 0.5rem;
+            line-height: 1.6;
+        }
+        
+        /* 响应式设计 */
+        @media (max-width: 768px) {
+            .training-tabs {
+                flex-direction: column;
+            }
+            
+            .training-tab {
+                border-bottom: 1px solid #e2e8f0;
+                border-radius: 0;
+            }
+            
+            .training-tab.active {
+                border-bottom: 1px solid #4f46e5;
+            }
+            
+            .tab-content {
+                padding: 1.5rem;
+            }
+            
+            .assessment-form {
+                padding: 1.5rem;
+            }
+            
+            .assessment-results {
+                padding: 1.5rem;
+            }
+            
+            .course-grid,
+            .resource-grid,
+            .experience-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .form-actions {
+                flex-direction: column;
+            }
+            
+            .form-actions button {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="header-container">
+            <h1>教案活井</h1>
+            <div class="mobile-menu-toggle">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+            <nav class="main-nav">
+                <ul>
+                    <li><a href="index.html">首页</a></li>
+                    <li><a href="courseware.html">教案设计</a></li>
+                    <li><a href="keypoints.html">重难点解析</a></li>
+                    <li><a href="grading.html">作业批改</a></li>
+                    <li><a href="resources.html">教学资源</a></li>
+                    <li><a href="template-library.html">教案模板</a></li>
+                    <li><a href="training.html" class="active">教师培训</a></li>
+                    <li><a href="shared-pool.html">共享池</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+    
+    <main>
+        <section class="hero small">
+            <h2>教师培训与学习中心</h2>
+            <p>提升教学能力，分享教学经验，共同成长</p>
+        </section>
+        
+        <section class="training-section">
+            <div class="training-tabs">
+                <div class="training-tab active" data-tab="courses">培训课程</div>
+                <div class="training-tab" data-tab="resources">学习资料</div>
+                <div class="training-tab" data-tab="experiences">经验分享</div>
+                <div class="training-tab" data-tab="assessment">能力评估</div>
+            </div>
+            
+            <div class="tab-content">
+                <!-- 培训课程 -->
+                <div class="tab-panel active" id="courses">
+                    <h3>推荐培训课程</h3>
+                    <div class="course-grid">
+                        <div class="course-card">
+                            <h3>现代教学方法与技巧</h3>
+                            <div class="course-meta">
+                                <span>📅 2026-05-01</span>
+                                <span>⏱️ 8课时</span>
+                            </div>
+                            <p class="course-description">学习最新的教学方法和技巧，包括翻转课堂、项目式学习等现代教学模式，提升课堂教学效果。</p>
+                            <div class="course-progress">
+                                <div class="progress-bar">
+                                    <div class="progress-fill" style="width: 60%;"></div>
+                                </div>
+                                <p>完成度: 60%</p>
+                            </div>
+                            <button class="btn-secondary">继续学习</button>
+                        </div>
+                        
+                        <div class="course-card">
+                            <h3>学生心理与行为管理</h3>
+                            <div class="course-meta">
+                                <span>📅 2026-05-15</span>
+                                <span>⏱️ 6课时</span>
+                            </div>
+                            <p class="course-description">了解学生心理发展特点，掌握有效的班级管理方法，创建积极和谐的学习环境。</p>
+                            <div class="course-progress">
+                                <div class="progress-bar">
+                                    <div class="progress-fill" style="width: 25%;"></div>
+                                </div>
+                                <p>完成度: 25%</p>
+                            </div>
+                            <button class="btn-secondary">继续学习</button>
+                        </div>
+                        
+                        <div class="course-card">
+                            <h3>多媒体教学资源应用</h3>
+                            <div class="course-meta">
+                                <span>📅 2026-06-01</span>
+                                <span>⏱️ 4课时</span>
+                            </div>
+                            <p class="course-description">学习如何有效利用多媒体资源提升教学效果，包括PPT制作、视频剪辑等实用技能。</p>
+                            <div class="course-progress">
+                                <div class="progress-bar">
+                                    <div class="progress-fill" style="width: 0%;"></div>
+                                </div>
+                                <p>完成度: 0%</p>
+                            </div>
+                            <button class="btn-secondary">开始学习</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 学习资料 -->
+                <div class="tab-panel" id="resources">
+                    <h3>教学方法学习资料</h3>
+                    <div class="resource-grid">
+                        <div class="resource-card">
+                            <h3>翻转课堂教学指南</h3>
+                            <div class="resource-meta">
+                                <span>📅 2026-04-10</span>
+                                <span>📄 PDF文档</span>
+                            </div>
+                            <p class="resource-description">详细介绍翻转课堂的概念、实施步骤和效果评估方法，包含实际教学案例分析。</p>
+                            <button class="btn-secondary">下载资料</button>
+                        </div>
+                        
+                        <div class="resource-card">
+                            <h3>项目式学习设计模板</h3>
+                            <div class="resource-meta">
+                                <span>📅 2026-04-15</span>
+                                <span>📄 PPT模板</span>
+                            </div>
+                            <p class="resource-description">提供项目式学习的设计框架和模板，帮助教师快速设计符合学生特点的项目式学习方案。</p>
+                            <button class="btn-secondary">下载资料</button>
+                        </div>
+                        
+                        <div class="resource-card">
+                            <h3>差异化教学策略</h3>
+                            <div class="resource-meta">
+                                <span>📅 2026-04-20</span>
+                                <span>📄 PDF文档</span>
+                            </div>
+                            <p class="resource-description">针对不同学习能力学生的教学策略，帮助教师满足多样化的学习需求。</p>
+                            <button class="btn-secondary">下载资料</button>
+                        </div>
+                        
+                        <div class="resource-card">
+                            <h3>课堂互动技巧集</h3>
+                            <div class="resource-meta">
+                                <span>📅 2026-04-25</span>
+                                <span>📄 PDF文档</span>
+                            </div>
+                            <p class="resource-description">汇总了多种课堂互动方法和技巧，提升学生参与度和学习效果。</p>
+                            <button class="btn-secondary">下载资料</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 经验分享 -->
+                <div class="tab-panel" id="experiences">
+                    <h3>教师经验分享</h3>
+                    <div class="experience-grid">
+                        <div class="experience-card">
+                            <div class="author-info">
+                                <div class="author-avatar">王</div>
+                                <div class="author-details">
+                                    <h4>王老师</h4>
+                                    <p>小学语文教师 | 教龄10年</p>
+                                </div>
+                            </div>
+                            <div class="experience-content">
+                                <p>在教学中，我发现通过故事化教学方法，能够大大提高学生的学习兴趣。特别是对于古诗词教学，将诗词背后的故事讲给学生听，让他们在理解的基础上记忆，效果非常显著。</p>
+                            </div>
+                            <div class="experience-tags">
+                                <span class="tag">语文教学</span>
+                                <span class="tag">故事化教学</span>
+                                <span class="tag">古诗词</span>
+                            </div>
+                        </div>
+                        
+                        <div class="experience-card">
+                            <div class="author-info">
+                                <div class="author-avatar">李</div>
+                                <div class="author-details">
+                                    <h4>李老师</h4>
+                                    <p>小学数学教师 | 教龄8年</p>
+                                </div>
+                            </div>
+                            <div class="experience-content">
+                                <p>数学教学中，我采用了"生活数学"的教学方法，将抽象的数学概念与学生的日常生活联系起来。例如，在教分数时，通过分蛋糕、分水果等实际场景，让学生更容易理解。</p>
+                            </div>
+                            <div class="experience-tags">
+                                <span class="tag">数学教学</span>
+                                <span class="tag">生活数学</span>
+                                <span class="tag">概念理解</span>
+                            </div>
+                        </div>
+                        
+                        <div class="experience-card">
+                            <div class="author-info">
+                                <div class="author-avatar">张</div>
+                                <div class="author-details">
+                                    <h4>张老师</h4>
+                                    <p>英语教师 | 教龄6年</p>
+                                </div>
+                            </div>
+                            <div class="experience-content">
+                                <p>英语教学中，我注重培养学生的听说能力。通过创设真实的语言情境，让学生在模拟的生活场景中练习英语对话，大大提高了学生的口语表达能力和学习兴趣。</p>
+                            </div>
+                            <div class="experience-tags">
+                                <span class="tag">英语教学</span>
+                                <span class="tag">听说训练</span>
+                                <span class="tag">情境教学</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div style="margin-top: 2rem; text-align: center;">
+                        <button class="btn-secondary">查看更多经验分享</button>
+                    </div>
+                </div>
+                
+                <!-- 能力评估 -->
+                <div class="tab-panel" id="assessment">
+                    <h3>教学能力评估</h3>
+                    <div class="assessment-form">
+                        <h3>教学能力自评问卷</h3>
+                        
+                        <div class="assessment-section">
+                            <h4>1. 教学方法与策略</h4>
+                            
+                            <div class="question-item">
+                                <h5>1.1 我能够根据学生的学习特点选择合适的教学方法</h5>
+                                <div class="option-group">
+                                    <div class="option-item">
+                                        <input type="radio" name="q1" value="5">
+                                        <label>非常符合</label>
+                                    </div>
+                                    <div class="option-item">
+                                        <input type="radio" name="q1" value="4">
+                                        <label>比较符合</label>
+                                    </div>
+                                    <div class="option-item">
+                                        <input type="radio" name="q1" value="3">
+                                        <label>一般</label>
+                                    </div>
+                                    <div class="option-item">
+                                        <input type="radio" name="q1" value="2">
+                                        <label>不太符合</label>
+                                    </div>
+                                    <div class="option-item">
+                                        <input type="radio" name="q1" value="1">
+                                        <label>完全不符合</label>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="question-item">
+                                <h5>1.2 我能够有效地运用多媒体资源辅助教学</h5>
+                                <div class="option-group">
+                                    <div class="option-item">
+                                        <input type="radio" name="q2" value="5">
+                                        <label>非常符合</label>
+                                    </div>
+                                    <div class="option-item">
+                                        <input type="radio" name="q2" value="4">
+                                        <label>比较符合</label>
+                                    </div>
+                                    <div class="option-item">
+                                        <input type="radio" name="q2" value="3">
+                                        <label>一般</label>
+                                    </div>
+                                    <div class="option-item">
+                                        <input type="radio" name="q2" value="2">
+                                        <label>不太符合</label>
+                                    </div>
+                                    <div class="option-item">
+                                        <input type="radio" name="q2" value="1">
+                                        <label>完全不符合</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="assessment-section">
+                            <h4>2. 课堂管理能力</h4>
+                            
+                            <div class="question-item">
+                                <h5>2.1 我能够有效地管理课堂秩序</h5>
+                                <div class="option-group">
+                                    <div class="option-item">
+                                        <input type="radio" name="q3" value="5">
+                                        <label>非常符合</label>
+                                    </div>
+                                    <div class="option-item">
+                                        <input type="radio" name="q3" value="4">
+                                        <label>比较符合</label>
+                                    </div>
+                                    <div class="option-item">
+                                        <input type="radio" name="q3" value="3">
+                                        <label>一般</label>
+                                    </div>
+                                    <div class="option-item">
+                                        <input type="radio" name="q3" value="2">
+                                        <label>不太符合</label>
+                                    </div>
+                                    <div class="option-item">
+                                        <input type="radio" name="q3" value="1">
+                                        <label>完全不符合</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="form-actions">
+                            <button class="btn-primary" onclick="submitAssessment()">提交评估</button>
+                            <button class="btn-secondary" type="reset">重置</button>
+                        </div>
+                    </div>
+                    
+                    <div class="assessment-results" id="assessmentResults" style="display: none;">
+                        <h3>评估结果</h3>
+                        <div class="result-summary">
+                            <div class="result-score">85/100</div>
+                            <h4>总体评价</h4>
+                            <div class="result-analysis">
+                                <p>您的教学能力处于良好水平，在教学方法选择和课堂管理方面表现突出。</p>
+                            </div>
+                        </div>
+                        
+                        <div class="recommendation-list">
+                            <h4>改进建议</h4>
+                            <ul>
+                                <li>加强多媒体资源的有效运用，提升课堂教学的直观性和趣味性</li>
+                                <li>进一步探索差异化教学策略，满足不同学生的学习需求</li>
+                                <li>参加更多关于现代教学方法的培训课程，不断更新教学理念</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="recommendation-list">
+                            <h4>推荐学习资源</h4>
+                            <ul>
+                                <li>《多媒体教学资源应用》培训课程</li>
+                                <li>《差异化教学策略》学习资料</li>
+                                <li>李老师的"生活数学"教学经验分享</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+    
+    <footer>
+        <div class="footer-container">
+            <div class="footer-info">
+                <h3>教案活井</h3>
+                <p>专注于教案设计的轻量级智能教学工具</p>
+            </div>
+            <div class="footer-links">
+                <h4>快速链接</h4>
+                <ul>
+                    <li><a href="index.html">首页</a></li>
+                    <li><a href="courseware.html">教案设计</a></li>
+                    <li><a href="resources.html">教学资源</a></li>
+                    <li><a href="training.html">教师培训</a></li>
+                </ul>
+            </div>
+            <div class="footer-contact">
+                <h4>了解更多</h4>
+                <p>轻量级架构，开箱即用</p>
+                <p>专注功能，简洁高效</p>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2026 教案活井 - 专注教案设计</p>
+        </div>
+    </footer>
+    
+    <script src="js/main.js"></script>
+    <script>
+        // 标签页切换功能
+        document.querySelectorAll('.training-tab').forEach(tab => {
+            tab.addEventListener('click', () => {
+                // 移除所有标签页的活动状态
+                document.querySelectorAll('.training-tab').forEach(t => t.classList.remove('active'));
+                document.querySelectorAll('.tab-panel').forEach(panel => panel.classList.remove('active'));
+                
+                // 添加当前标签页的活动状态
+                tab.classList.add('active');
+                const tabId = tab.getAttribute('data-tab');
+                document.getElementById(tabId).classList.add('active');
+            });
+        });
+        
+        // 提交评估功能
+        function submitAssessment() {
+            // 模拟评估结果
+            document.getElementById('assessmentResults').style.display = 'block';
+            // 滚动到结果区域
+            document.getElementById('assessmentResults').scrollIntoView({ behavior: 'smooth' });
+        }
+    </script>
+</body>
+</html>

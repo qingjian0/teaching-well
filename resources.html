@@ -1,0 +1,835 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>教学资源管理 - 教案活井</title>
+    <link rel="stylesheet" href="css/style.css">
+    <!-- 引入Chart.js用于数据可视化 -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- 引入TRAE SOLO SDK用于AI能力 -->
+    <script src="https://cdn.trae.com/sdk/v1/trae-solo.js"></script>
+    <style>
+        /* 资源管理页面样式 */
+        .resources-section {
+            margin-bottom: 3rem;
+        }
+        
+        .resources-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+        
+        .resources-header h3 {
+            color: #2d3748;
+            font-weight: 700;
+        }
+        
+        .search-container {
+            flex: 1;
+            min-width: 300px;
+            position: relative;
+        }
+        
+        .search-input {
+            width: 100%;
+            padding: 0.75rem 1rem 0.75rem 3rem;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.2s ease;
+        }
+        
+        .search-input:focus {
+            outline: none;
+            border-color: #4f46e5;
+        }
+        
+        .search-icon {
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #4a5568;
+        }
+        
+        .filter-container {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            margin-bottom: 2rem;
+        }
+        
+        .filter-select {
+            padding: 0.75rem;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 1rem;
+            min-width: 150px;
+            transition: border-color 0.2s ease;
+        }
+        
+        .filter-select:focus {
+            outline: none;
+            border-color: #4f46e5;
+        }
+        
+        .resource-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        
+        .resource-card {
+            background-color: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
+            overflow: hidden;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            border: 1px solid #e2e8f0;
+        }
+        
+        .resource-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1);
+        }
+        
+        .resource-card-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        
+        .resource-card-header h3 {
+            margin-bottom: 0.5rem;
+            color: #4f46e5;
+            font-weight: 700;
+        }
+        
+        .resource-card-meta {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1rem;
+            font-size: 0.9rem;
+            color: #4a5568;
+        }
+        
+        .resource-card-body {
+            padding: 1.5rem;
+        }
+        
+        .resource-card-body p {
+            color: #374151;
+            line-height: 1.6;
+        }
+        
+        .resource-card-footer {
+            padding: 1rem 1.5rem;
+            border-top: 1px solid #e2e8f0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: #f7fafc;
+        }
+        
+        .resource-card-footer span {
+            color: #4a5568;
+            font-size: 0.9rem;
+        }
+        
+        .resource-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+        
+        .action-btn {
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+        }
+        
+        .action-btn.view {
+            background: linear-gradient(135deg, #059669 0%, #10b981 100%);
+            color: white;
+        }
+        
+        .action-btn.share {
+            background: linear-gradient(135deg, #2563eb 0%, #3b82f6 100%);
+            color: white;
+        }
+        
+        .action-btn.delete {
+            background: linear-gradient(135deg, #dc2626 0%, #ef4444 100%);
+            color: white;
+        }
+        
+        .action-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+        
+        .upload-section {
+            background-color: white;
+            padding: 2.5rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
+            margin-bottom: 3rem;
+            border: 1px solid #e2e8f0;
+        }
+        
+        .upload-section h3 {
+            margin-bottom: 2rem;
+            color: #4f46e5;
+            font-weight: 700;
+        }
+        
+        .upload-form {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+        }
+        
+        .form-group.full-width {
+            grid-column: 1 / -1;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 0.75rem;
+            font-weight: 700;
+            color: #2d3748;
+        }
+        
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 0.875rem;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.2s ease;
+        }
+        
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #4f46e5;
+        }
+        
+        .form-group textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+        
+        .file-upload {
+            border: 2px dashed #e2e8f0;
+            border-radius: 10px;
+            padding: 2.5rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background-color: #f7fafc;
+        }
+        
+        .file-upload:hover {
+            border-color: #4f46e5;
+            background-color: #f0f4ff;
+        }
+        
+        .file-upload input[type="file"] {
+            display: none;
+        }
+        
+        .file-upload-label {
+            display: block;
+            cursor: pointer;
+        }
+        
+        .file-upload-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            color: #4f46e5;
+        }
+        
+        .file-upload-text {
+            margin-bottom: 0.5rem;
+            font-weight: bold;
+            color: #2d3748;
+        }
+        
+        .file-upload-hint {
+            font-size: 0.9rem;
+            color: #4a5568;
+        }
+        
+        .toast {
+            position: fixed;
+            top: 2rem;
+            right: 2rem;
+            padding: 1rem 1.5rem;
+            border-radius: 8px;
+            color: white;
+            font-weight: bold;
+            z-index: 10000;
+            transform: translateX(400px);
+            transition: transform 0.3s ease;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
+        }
+        
+        .toast.success {
+            background: linear-gradient(135deg, #059669 0%, #10b981 100%);
+        }
+        
+        .toast.error {
+            background: linear-gradient(135deg, #dc2626 0%, #ef4444 100%);
+        }
+        
+        .toast.show {
+            transform: translateX(0);
+        }
+        
+        /* 响应式设计 */
+        @media (max-width: 768px) {
+            .resources-header {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            
+            .search-container {
+                width: 100%;
+            }
+            
+            .filter-container {
+                flex-direction: column;
+            }
+            
+            .filter-select {
+                width: 100%;
+            }
+            
+            .upload-form {
+                grid-template-columns: 1fr;
+            }
+            
+            .upload-section {
+                padding: 1.5rem;
+            }
+            
+            .resource-card-footer {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 0.5rem;
+            }
+            
+            .resource-actions {
+                justify-content: space-between;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="header-container">
+            <h1>教案活井</h1>
+            <div class="mobile-menu-toggle">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+            <nav class="main-nav">
+                <ul>
+                    <li><a href="index.html">首页</a></li>
+                    <li><a href="courseware.html">教案设计</a></li>
+                    <li><a href="keypoints.html">重难点解析</a></li>
+                    <li><a href="grading.html">作业批改</a></li>
+                    <li><a href="resources.html" class="active">教学资源</a></li>
+                    <li><a href="template-library.html">教案模板</a></li>
+                    <li><a href="training.html">教师培训</a></li>
+                    <li><a href="shared-pool.html">共享池</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+    
+    <main>
+        <section class="hero small">
+            <h2>教学资源管理</h2>
+            <p>管理、分类和分享教学资源，提升教学效率</p>
+        </section>
+        
+        <!-- 上传资源部分 -->
+        <section class="upload-section">
+            <h3>上传新资源</h3>
+            <form id="upload-form" class="upload-form">
+                <div class="form-group">
+                    <label for="resource-title">资源标题</label>
+                    <input type="text" id="resource-title" placeholder="请输入资源标题">
+                </div>
+                <div class="form-group">
+                    <label for="resource-subject">学科</label>
+                    <select id="resource-subject">
+                        <option value="">选择学科</option>
+                        <option value="chinese">语文</option>
+                        <option value="math">数学</option>
+                        <option value="english">英语</option>
+                        <option value="science">科学</option>
+                        <option value="other">其他</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="resource-grade">年级</label>
+                    <select id="resource-grade">
+                        <option value="">选择年级</option>
+                        <option value="1">一年级</option>
+                        <option value="2">二年级</option>
+                        <option value="3">三年级</option>
+                        <option value="4">四年级</option>
+                        <option value="5">五年级</option>
+                        <option value="6">六年级</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="resource-type">资源类型</label>
+                    <select id="resource-type">
+                        <option value="">选择类型</option>
+                        <option value="courseware">课件</option>
+                        <option value="lesson-plan">教案</option>
+                        <option value="exercise">习题</option>
+                        <option value="material">素材</option>
+                        <option value="other">其他</option>
+                    </select>
+                </div>
+                <div class="form-group full-width">
+                    <label for="resource-description">资源描述</label>
+                    <textarea id="resource-description" placeholder="请输入资源描述" rows="3"></textarea>
+                </div>
+                <div class="form-group full-width">
+                    <div class="file-upload">
+                        <input type="file" id="resource-file" accept=".pdf,.doc,.docx,.ppt,.pptx,.xls,.xlsx,.jpg,.jpeg,.png">
+                        <label for="resource-file" class="file-upload-label">
+                            <div class="file-upload-icon">📁</div>
+                            <div class="file-upload-text">点击或拖拽文件到此处上传</div>
+                            <div class="file-upload-hint">支持 PDF、Word、PPT、Excel、图片等格式</div>
+                        </label>
+                    </div>
+                </div>
+                <div class="form-group full-width">
+                    <button type="submit" class="btn-primary">上传资源</button>
+                </div>
+            </form>
+        </section>
+        
+        <!-- 资源管理部分 -->
+        <section class="resources-section">
+            <div class="resources-header">
+                <h3>我的教学资源</h3>
+                <div class="search-container">
+                    <input type="text" id="search-input" class="search-input" placeholder="搜索资源...">
+                    <span class="search-icon">🔍</span>
+                </div>
+            </div>
+            
+            <div class="filter-container">
+                <select id="filter-subject" class="filter-select">
+                    <option value="">全部学科</option>
+                    <option value="chinese">语文</option>
+                    <option value="math">数学</option>
+                    <option value="english">英语</option>
+                    <option value="science">科学</option>
+                    <option value="other">其他</option>
+                </select>
+                <select id="filter-grade" class="filter-select">
+                    <option value="">全部年级</option>
+                    <option value="1">一年级</option>
+                    <option value="2">二年级</option>
+                    <option value="3">三年级</option>
+                    <option value="4">四年级</option>
+                    <option value="5">五年级</option>
+                    <option value="6">六年级</option>
+                </select>
+                <select id="filter-type" class="filter-select">
+                    <option value="">全部类型</option>
+                    <option value="courseware">课件</option>
+                    <option value="lesson-plan">教案</option>
+                    <option value="exercise">习题</option>
+                    <option value="material">素材</option>
+                    <option value="other">其他</option>
+                </select>
+            </div>
+            
+            <div id="resource-grid" class="resource-grid">
+                <!-- 资源卡片将通过JavaScript动态生成 -->
+            </div>
+        </section>
+    </main>
+    
+    <footer>
+        <div class="footer-container">
+            <div class="footer-info">
+                <h3>教案活井</h3>
+                <p>专注于教案设计的轻量级智能教学工具</p>
+            </div>
+            <div class="footer-links">
+                <h4>快速链接</h4>
+                <ul>
+                    <li><a href="index.html">首页</a></li>
+                    <li><a href="courseware.html">教案设计</a></li>
+                    <li><a href="resources.html">教学资源</a></li>
+                    <li><a href="training.html">教师培训</a></li>
+                </ul>
+            </div>
+            <div class="footer-contact">
+                <h4>了解更多</h4>
+                <p>轻量级架构，开箱即用</p>
+                <p>专注功能，简洁高效</p>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2026 教案活井 - 专注教案设计</p>
+        </div>
+    </footer>
+    
+    <!-- 提示框 -->
+    <div id="toast" class="toast"></div>
+    
+    <script src="js/main.js"></script>
+    <script>
+        // 资源数据存储
+        let resources = JSON.parse(localStorage.getItem('resources')) || [
+            {
+                id: 1,
+                title: '三年级数学上册课件',
+                subject: 'math',
+                grade: '3',
+                type: 'courseware',
+                description: '三年级数学上册第一单元课件，包含乘法和除法的基本概念',
+                filename: 'math-grade3-1.pptx',
+                size: '2.5MB',
+                uploadDate: '2026-04-20',
+                shared: false
+            },
+            {
+                id: 2,
+                title: '五年级语文作文指导',
+                subject: 'chinese',
+                grade: '5',
+                type: 'lesson-plan',
+                description: '五年级语文作文指导教案，包含写作技巧和示例',
+                filename: 'chinese-grade5-writing.docx',
+                size: '1.8MB',
+                uploadDate: '2026-04-18',
+                shared: true
+            },
+            {
+                id: 3,
+                title: '四年级英语单词表',
+                subject: 'english',
+                grade: '4',
+                type: 'material',
+                description: '四年级英语下册单词表，包含音标和例句',
+                filename: 'english-grade4-words.xlsx',
+                size: '1.2MB',
+                uploadDate: '2026-04-15',
+                shared: false
+            },
+            {
+                id: 4,
+                title: '六年级科学实验视频',
+                subject: 'science',
+                grade: '6',
+                type: 'material',
+                description: '六年级科学实验视频合集，包含物理和化学实验',
+                filename: 'science-grade6-experiments.mp4',
+                size: '50MB',
+                uploadDate: '2026-04-10',
+                shared: true
+            }
+        ];
+        
+        // 保存资源到本地存储
+        function saveResources() {
+            localStorage.setItem('resources', JSON.stringify(resources));
+        }
+        
+        // 显示提示框
+        function showToast(message, type) {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.className = `toast ${type} show`;
+            
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        }
+        
+        // 生成资源卡片
+        function generateResourceCards(filteredResources) {
+            const resourceGrid = document.getElementById('resource-grid');
+            resourceGrid.innerHTML = '';
+            
+            if (filteredResources.length === 0) {
+                resourceGrid.innerHTML = '<div class="loading">暂无资源</div>';
+                return;
+            }
+            
+            filteredResources.forEach(resource => {
+                const card = document.createElement('div');
+                card.className = 'resource-card';
+                
+                // 转换学科、年级和类型为中文
+                const subjects = {
+                    'chinese': '语文',
+                    'math': '数学',
+                    'english': '英语',
+                    'science': '科学',
+                    'other': '其他'
+                };
+                
+                const grades = {
+                    '1': '一年级',
+                    '2': '二年级',
+                    '3': '三年级',
+                    '4': '四年级',
+                    '5': '五年级',
+                    '6': '六年级'
+                };
+                
+                const types = {
+                    'courseware': '课件',
+                    'lesson-plan': '教案',
+                    'exercise': '习题',
+                    'material': '素材',
+                    'other': '其他'
+                };
+                
+                card.innerHTML = `
+                    <div class="resource-card-header">
+                        <h3>${resource.title}</h3>
+                        <div class="resource-card-meta">
+                            <span>${subjects[resource.subject]}</span>
+                            <span>${grades[resource.grade]}</span>
+                            <span>${types[resource.type]}</span>
+                        </div>
+                    </div>
+                    <div class="resource-card-body">
+                        <p>${resource.description}</p>
+                        <div style="margin-top: 1rem; font-size: 0.9rem; color: #666;">
+                            <p>文件名：${resource.filename}</p>
+                            <p>大小：${resource.size}</p>
+                            <p>上传日期：${resource.uploadDate}</p>
+                        </div>
+                    </div>
+                    <div class="resource-card-footer">
+                        <span>${resource.shared ? '已分享' : '未分享'}</span>
+                        <div class="resource-actions">
+                            <button class="action-btn view" onclick="viewResource(${resource.id})">查看</button>
+                            <button class="action-btn share" onclick="shareResource(${resource.id})">分享</button>
+                            <button class="action-btn delete" onclick="deleteResource(${resource.id})">删除</button>
+                        </div>
+                    </div>
+                `;
+                
+                resourceGrid.appendChild(card);
+            });
+        }
+        
+        // 查看资源
+        function viewResource(id) {
+            const resource = resources.find(r => r.id === id);
+            if (resource) {
+                // 模拟资源查看功能
+                const previewModal = document.createElement('div');
+                previewModal.style.cssText = 'position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 10000; display: flex; align-items: center; justify-content: center;';
+                previewModal.innerHTML = `
+                    <div style="background: white; padding: 2rem; border-radius: 8px; max-width: 80%; max-height: 80%; overflow: auto;">
+                        <button onclick="this.parentElement.parentElement.remove()" style="position: absolute; top: 1rem; right: 1rem; background: none; border: none; font-size: 1.5rem; cursor: pointer;">&times;</button>
+                        <h3>${resource.title}</h3>
+                        <div style="margin: 1rem 0; padding: 1rem; background: #f9f9f9; border-radius: 4px;">
+                            <p><strong>学科：</strong>${getSubjectName(resource.subject)}</p>
+                            <p><strong>年级：</strong>${getGradeName(resource.grade)}</p>
+                            <p><strong>类型：</strong>${getResourceTypeName(resource.type)}</p>
+                            <p><strong>文件：</strong>${resource.filename}</p>
+                            <p><strong>大小：</strong>${resource.size}</p>
+                            <p><strong>上传日期：</strong>${resource.uploadDate}</p>
+                            <p><strong>分享状态：</strong>${resource.shared ? '已分享' : '未分享'}</p>
+                        </div>
+                        <div style="margin: 1rem 0;">
+                            <h4>资源描述</h4>
+                            <p>${resource.description}</p>
+                        </div>
+                        <div style="margin-top: 2rem; text-align: center;">
+                            <button onclick="this.parentElement.parentElement.parentElement.remove()" class="btn-secondary">关闭</button>
+                        </div>
+                    </div>
+                `;
+                document.body.appendChild(previewModal);
+            }
+        }
+        
+        // 分享资源
+        function shareResource(id) {
+            const resource = resources.find(r => r.id === id);
+            if (resource) {
+                resource.shared = !resource.shared;
+                saveResources();
+                filterResources();
+                showToast(resource.shared ? '资源已分享' : '取消分享成功', 'success');
+            }
+        }
+        
+        // 删除资源
+        function deleteResource(id) {
+            if (confirm('确定要删除这个资源吗？')) {
+                resources = resources.filter(r => r.id !== id);
+                saveResources();
+                filterResources();
+                showToast('资源删除成功', 'success');
+            }
+        }
+        
+        // 获取学科名称
+        function getSubjectName(subject) {
+            const subjects = {
+                'chinese': '语文',
+                'math': '数学',
+                'english': '英语',
+                'science': '科学',
+                'other': '其他'
+            };
+            return subjects[subject] || '其他';
+        }
+        
+        // 获取年级名称
+        function getGradeName(grade) {
+            const grades = {
+                '1': '一年级',
+                '2': '二年级',
+                '3': '三年级',
+                '4': '四年级',
+                '5': '五年级',
+                '6': '六年级'
+            };
+            return grades[grade] || '未知年级';
+        }
+        
+        // 获取资源类型名称
+        function getResourceTypeName(type) {
+            const types = {
+                'courseware': '课件',
+                'lesson-plan': '教案',
+                'exercise': '习题',
+                'material': '素材',
+                'other': '其他'
+            };
+            return types[type] || '其他';
+        }
+        
+        // 过滤资源
+        function filterResources() {
+            const searchTerm = document.getElementById('search-input').value.toLowerCase();
+            const subjectFilter = document.getElementById('filter-subject').value;
+            const gradeFilter = document.getElementById('filter-grade').value;
+            const typeFilter = document.getElementById('filter-type').value;
+            
+            const filteredResources = resources.filter(resource => {
+                const matchesSearch = resource.title.toLowerCase().includes(searchTerm) || 
+                                     resource.description.toLowerCase().includes(searchTerm);
+                const matchesSubject = !subjectFilter || resource.subject === subjectFilter;
+                const matchesGrade = !gradeFilter || resource.grade === gradeFilter;
+                const matchesType = !typeFilter || resource.type === typeFilter;
+                
+                return matchesSearch && matchesSubject && matchesGrade && matchesType;
+            });
+            
+            generateResourceCards(filteredResources);
+        }
+        
+        // 上传资源表单处理
+        document.getElementById('upload-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const title = document.getElementById('resource-title').value;
+            const subject = document.getElementById('resource-subject').value;
+            const grade = document.getElementById('resource-grade').value;
+            const type = document.getElementById('resource-type').value;
+            const description = document.getElementById('resource-description').value;
+            const fileInput = document.getElementById('resource-file');
+            
+            if (!title || !subject || !grade || !type || !description || !fileInput.files.length) {
+                showToast('请填写所有必填字段并选择文件', 'error');
+                return;
+            }
+            
+            const file = fileInput.files[0];
+            const fileName = file.name;
+            const fileSize = (file.size / (1024 * 1024)).toFixed(1) + 'MB';
+            const today = new Date().toISOString().split('T')[0];
+            
+            const newResource = {
+                id: Date.now(),
+                title,
+                subject,
+                grade,
+                type,
+                description,
+                filename: fileName,
+                size: fileSize,
+                uploadDate: today,
+                shared: false
+            };
+            
+            // 模拟文件上传
+            const uploadProgress = document.createElement('div');
+            uploadProgress.style.cssText = 'position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: white; padding: 2rem; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.15); z-index: 10000;';
+            uploadProgress.innerHTML = '<h3>上传中...</h3><div style="width: 300px; height: 20px; background: #f0f0f0; border-radius: 10px; overflow: hidden;"><div style="width: 0%; height: 100%; background: #4CAF50; transition: width 0.3s ease;"></div></div>';
+            document.body.appendChild(uploadProgress);
+            
+            // 模拟上传进度
+            let progress = 0;
+            const interval = setInterval(() => {
+                progress += 10;
+                uploadProgress.querySelector('div > div').style.width = progress + '%';
+                if (progress >= 100) {
+                    clearInterval(interval);
+                    setTimeout(() => {
+                        document.body.removeChild(uploadProgress);
+                        resources.push(newResource);
+                        saveResources();
+                        filterResources();
+                        
+                        // 重置表单
+                        document.getElementById('upload-form').reset();
+                        showToast('资源上传成功', 'success');
+                    }, 500);
+                }
+            }, 200);
+        });
+        
+        // 搜索输入事件
+        document.getElementById('search-input').addEventListener('input', filterResources);
+        
+        // 筛选器变化事件
+        document.getElementById('filter-subject').addEventListener('change', filterResources);
+        document.getElementById('filter-grade').addEventListener('change', filterResources);
+        document.getElementById('filter-type').addEventListener('change', filterResources);
+        
+        // 初始化页面
+        function init() {
+            saveResources(); // 确保初始数据保存到本地存储
+            filterResources();
+        }
+        
+        // 页面加载完成后初始化
+        window.addEventListener('DOMContentLoaded', init);
+    </script>
+</body>
+</html>
