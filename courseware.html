@@ -442,8 +442,13 @@
                 templateItems[0].classList.add('selected');
             }
             
-            // 生成按钮点击事件
-            document.getElementById('generateBtn').addEventListener('click', function() {
+            // 生成按钮点击事件（带防抖处理）
+            let isGenerating = false;
+            let lastClickTime = 0;
+            const DEBOUNCE_INTERVAL = 3000; // 3秒防抖
+            
+            document.getElementById('generateBtn').addEventListener('click', async function() {
+                const currentTime = Date.now();
                 const subject = document.getElementById('subject').value;
                 const version = document.getElementById('version').value;
                 const grade = document.getElementById('grade').value;
@@ -456,31 +461,54 @@
                     return;
                 }
                 
-                // 显示加载状态
-                document.getElementById('loading').classList.add('active');
+                // 防抖处理
+                if (currentTime - lastClickTime < DEBOUNCE_INTERVAL) {
+                    const remainingTime = Math.ceil((DEBOUNCE_INTERVAL - (currentTime - lastClickTime)) / 1000);
+                    showToast(`请稍等 ${remainingTime} 秒后再试`, 'info');
+                    return;
+                }
                 
-                // 使用本地智能引擎生成教案
-                LocalAIEngine.generateLessonPlan({
-                    subject: subject,
-                    grade: grade,
-                    topic: topic,
-                    version: version,
-                    content: content,
-                    template: selectedTemplate
-                }).then(response => {
-                    // 隐藏加载状态
-                    document.getElementById('loading').classList.remove('active');
+                // 防止重复点击
+                if (isGenerating) {
+                    showToast('正在生成中，请稍候...', 'info');
+                    return;
+                }
+                
+                isGenerating = true;
+                lastClickTime = currentTime;
+                this.disabled = true;
+                this.textContent = '生成中...';
+                
+                // 显示加载状态
+                const loadingEl = document.getElementById('loading');
+                const loadingText = loadingEl.querySelector('p');
+                loadingEl.classList.add('active');
+                loadingText.textContent = '正在生成教案，请稍候...';
+                
+                try {
+                    // 使用本地智能引擎生成教案
+                    const response = await LocalAIEngine.generateLessonPlan({
+                        subject: subject,
+                        grade: grade,
+                        topic: topic,
+                        version: version,
+                        content: content,
+                        template: selectedTemplate
+                    });
                     
                     // 显示结果
                     document.getElementById('resultContent').innerHTML = response.content;
                     document.getElementById('resultSection').classList.add('active');
                     showToast('教案生成成功！', 'success');
-                }).catch(error => {
-                    // 隐藏加载状态
-                    document.getElementById('loading').classList.remove('active');
-                    showToast('教案生成失败，请稍后重试', 'error');
+                } catch (error) {
                     console.error('教案生成失败：', error);
-                });
+                    showToast('教案生成失败，请稍后重试', 'error');
+                } finally {
+                    isGenerating = false;
+                    this.disabled = false;
+                    this.textContent = '生成教案';
+                    loadingEl.classList.remove('active');
+                }
             });
             
             // 重置按钮点击事件
