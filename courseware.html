@@ -7,7 +7,8 @@
     <link rel="stylesheet" href="css/style.css">
     <!-- 引入Chart.js用于数据可视化 -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <!-- AI能力通过本地智能引擎提供，确保离线可用 -->
+    <!-- 引入TRAE SOLO SDK用于AI能力 -->
+    <script src="https://cdn.trae.com/sdk/v1/trae-solo.js"></script>
     <style>
         /* 教案设计页面专用样式 */
         .courseware-generator {
@@ -422,6 +423,7 @@
     </div>
     
     <script src="js/main.js"></script>
+    <script src="js/toast-manager.js"></script>
     <script src="js/local-ai-engine.js"></script>
     <script>
         // 教案设计页面脚本
@@ -430,47 +432,43 @@
             const templateItems = document.querySelectorAll('.template-item');
             templateItems.forEach(item => {
                 item.addEventListener('click', function() {
-                    // 移除其他模板的选中状态
                     templateItems.forEach(t => t.classList.remove('selected'));
-                    // 添加当前模板的选中状态
                     this.classList.add('selected');
                 });
             });
             
-            // 默认选中第一个模板
             if (templateItems.length > 0) {
                 templateItems[0].classList.add('selected');
             }
             
-            // 生成按钮点击事件（带防抖处理）
+            // 生成按钮防抖状态管理
             let isGenerating = false;
             let lastClickTime = 0;
-            const DEBOUNCE_INTERVAL = 3000; // 3秒防抖
+            const DEBOUNCE_INTERVAL = 3000;
             
             document.getElementById('generateBtn').addEventListener('click', async function() {
                 const currentTime = Date.now();
                 const subject = document.getElementById('subject').value;
                 const version = document.getElementById('version').value;
                 const grade = document.getElementById('grade').value;
-                const topic = document.getElementById('topic').value;
+                const topic = document.getElementById('topic').value.trim();
                 const content = document.getElementById('content').value;
                 const selectedTemplate = document.querySelector('.template-item.selected').dataset.template;
-                
-                if (!subject || !version || !grade || !topic) {
-                    showToast('请填写完整的教学信息（包括教材版本）', 'error');
-                    return;
-                }
                 
                 // 防抖处理
                 if (currentTime - lastClickTime < DEBOUNCE_INTERVAL) {
                     const remainingTime = Math.ceil((DEBOUNCE_INTERVAL - (currentTime - lastClickTime)) / 1000);
-                    showToast(`请稍等 ${remainingTime} 秒后再试`, 'info');
+                    ToastManager.warning(`请等待 ${remainingTime} 秒后再试`);
                     return;
                 }
                 
-                // 防止重复点击
                 if (isGenerating) {
-                    showToast('正在生成中，请稍候...', 'info');
+                    ToastManager.info('正在生成中，请稍候...');
+                    return;
+                }
+                
+                if (!subject || !version || !grade || !topic) {
+                    ToastManager.error('请填写完整的教学信息（包括教材版本）');
                     return;
                 }
                 
@@ -479,14 +477,12 @@
                 this.disabled = true;
                 this.textContent = '生成中...';
                 
-                // 显示加载状态
                 const loadingEl = document.getElementById('loading');
                 const loadingText = loadingEl.querySelector('p');
                 loadingEl.classList.add('active');
-                loadingText.textContent = '正在生成教案，请稍候...';
+                loadingText.textContent = `正在生成 ${topic} 教案，请稍候...`;
                 
                 try {
-                    // 使用本地智能引擎生成教案
                     const response = await LocalAIEngine.generateLessonPlan({
                         subject: subject,
                         grade: grade,
@@ -496,13 +492,14 @@
                         template: selectedTemplate
                     });
                     
-                    // 显示结果
                     document.getElementById('resultContent').innerHTML = response.content;
                     document.getElementById('resultSection').classList.add('active');
-                    showToast('教案生成成功！', 'success');
+                    ToastManager.success('教案生成成功！');
+                    
+                    document.getElementById('resultContent').scrollIntoView({ behavior: 'smooth', block: 'start' });
                 } catch (error) {
                     console.error('教案生成失败：', error);
-                    showToast('教案生成失败，请稍后重试', 'error');
+                    ToastManager.error('教案生成失败，请稍后重试');
                 } finally {
                     isGenerating = false;
                     this.disabled = false;
@@ -522,7 +519,7 @@
                     templateItems[0].classList.add('selected');
                 }
                 document.getElementById('resultSection').classList.remove('active');
-                showToast('表单已重置', 'info');
+                ToastManager.info('表单已重置');
             });
             
             // 预览按钮点击事件
@@ -541,7 +538,7 @@
             document.getElementById('exportBtn').addEventListener('click', function() {
                 const content = document.getElementById('resultContent').innerHTML;
                 exportCourseware(content);
-                showToast('教案导出成功！', 'success');
+                ToastManager.success('教案导出成功！');
             });
             
             // 重新生成按钮点击事件
@@ -573,7 +570,7 @@
                 const shareLink = document.getElementById('shareLink');
                 shareLink.select();
                 document.execCommand('copy');
-                showToast('链接复制成功！', 'success');
+                ToastManager.success('链接复制成功！');
             });
             
             // 打印按钮点击事件
@@ -977,65 +974,6 @@
                     document.querySelector('.generator-header p').textContent = '由其他教师分享的教案内容';
                 }
             }
-        }
-        
-        // 显示提示框
-        let lastToastTime = 0;
-        const TOAST_MIN_INTERVAL = 2000; // 最小提示间隔2秒
-        
-        function showToast(message, type = 'info') {
-            const now = Date.now();
-            // 如果距离上次提示时间太短，忽略本次提示
-            if (now - lastToastTime < TOAST_MIN_INTERVAL) {
-                console.log('提示过于频繁，已忽略:', message);
-                return;
-            }
-            lastToastTime = now;
-            
-            const toast = document.createElement('div');
-            toast.className = `toast ${type}`;
-            toast.textContent = message;
-            toast.style.cssText = `
-                position: fixed;
-                top: 20px;
-                right: 20px;
-                padding: 1rem 1.5rem;
-                border-radius: 8px;
-                color: white;
-                font-weight: 600;
-                z-index: 10000;
-                animation: slideIn 0.3s ease;
-                box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-                display: flex;
-                align-items: center;
-                gap: 0.5rem;
-            `;
-            
-            // 添加图标
-            const icon = document.createElement('span');
-            if (type === 'success') {
-                toast.style.backgroundColor = '#10b981';
-                icon.textContent = '✓';
-            } else if (type === 'error') {
-                toast.style.backgroundColor = '#ef4444';
-                icon.textContent = '✕';
-            } else {
-                toast.style.backgroundColor = '#3b82f6';
-                icon.textContent = 'ℹ';
-            }
-            toast.insertBefore(icon, toast.firstChild);
-            
-            document.body.appendChild(toast);
-            
-            // 3秒后移除
-            setTimeout(() => {
-                toast.style.animation = 'slideOut 0.3s ease';
-                setTimeout(() => {
-                    if (document.body.contains(toast)) {
-                        document.body.removeChild(toast);
-                    }
-                }, 300);
-            }, 3000);
         }
         
         // 页面加载时检查分享链接

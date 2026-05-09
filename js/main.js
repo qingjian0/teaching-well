@@ -1,93 +1,15 @@
 // 乡村教师教学助手 - 主脚本
-document.addEventListener('DOMContentLoaded', function() {
-    console.log('✅ 乡村教师教学助手已加载');
-    initLocalAI();
-    bindEventListeners();
-});
-
-function initLocalAI() {
-    console.log('🤖 本地智能引擎初始化中...');
-    if (typeof LocalAIEngine !== 'undefined') {
-        LocalAIEngine.init();
-        console.log('✅ 本地智能引擎初始化完成');
-    } else {
-        console.warn('⚠️ 本地智能引擎未找到，使用备用方案');
-    }
-}
-
-function bindEventListeners() {
-    const startBtn = document.querySelector('.btn-primary');
-    if (startBtn) {
-        startBtn.addEventListener('click', function() {
-            console.log('开始使用按钮点击');
-            window.location.href = 'courseware.html';
-        });
-    }
-    
-    const navLinks = document.querySelectorAll('nav ul li a');
-    navLinks.forEach(link => {
-        link.addEventListener('click', function(e) {
-            const mainNav = document.querySelector('.main-nav');
-            if (mainNav && mainNav.classList.contains('active')) {
-                mainNav.classList.remove('active');
-            }
-        });
-    });
-    
-    const mobileMenuToggle = document.querySelector('.mobile-menu-toggle');
-    const mainNav = document.querySelector('.main-nav');
-    if (mobileMenuToggle && mainNav) {
-        mobileMenuToggle.addEventListener('click', function() {
-            mainNav.classList.toggle('active');
-            console.log('移动端菜单切换');
-        });
-    }
-    
-    document.querySelectorAll('button').forEach(button => {
-        button.addEventListener('click', function() {
-            this.classList.add('clicked');
-            setTimeout(() => {
-                this.classList.remove('clicked');
-            }, 300);
-        });
-    });
-}
-
-function showNotification(message, type = 'info') {
-    console.log(type + ':', message);
-}
-
-function validateForm(formData) {
-    for (const [key, value] of Object.entries(formData)) {
-        if (!value || value.trim() === '') {
-            return { valid: false, message: `请填写${key}` };
-        }
-    }
-    return { valid: true };
-}
-
-function saveToLocalStorage(key, data) {
-    try {
-        localStorage.setItem(key, JSON.stringify(data));
-        return true;
-    } catch (error) {
-        console.error('存储数据失败：', error);
-        return false;
-    }
-}
-
-function getFromLocalStorage(key) {
-    try {
-        const data = localStorage.getItem(key);
-        return data ? JSON.parse(data) : null;
-    } catch (error) {
-        console.error('获取数据失败：', error);
-        return null;
-    }
-}
-
-window.showToast = function(message, type = 'info') {
-    console.log(type + ':', message);
-};
-
-console.log('📚 教学助手主脚本加载完成');
+// 页面加载完成后执行
+document.addEventListener('DOMContentLoaded',function(){initTraeSoloSDK();bindEventListeners();initPageFunctions();});
+// 初始化TRAE SOLO SDK
+function initTraeSoloSDK(){console.log('初始化TRAE SOLO SDK...');if(typeof TRAE!=='undefined'){TRAE.init({apiKey:'demo-api-key',endpoint:'https://api.trae.com/v1',timeout:30000});console.log('TRAE SOLO SDK初始化成功');}else{console.error('TRAE SOLO SDK未加载');const script=document.createElement('script');script.src='https://cdn.trae.com/sdk/v1/trae-solo.js';script.onload=function(){console.log('TRAE SOLO SDK加载成功');TRAE.init({apiKey:'demo-api-key',endpoint:'https://api.trae.com/v1',timeout:30000});};script.onerror=function(){console.error('TRAE SOLO SDK加载失败');};document.head.appendChild(script);}}
+// 绑定事件监听器
+function bindEventListeners(){const startBtn=document.querySelector('.btn-primary');if(startBtn){startBtn.addEventListener('click',function(){console.log('开始使用按钮点击');alert('欢迎使用乡村教师教学助手！');});}const navLinks=document.querySelectorAll('nav ul li a');navLinks.forEach(link=>{link.addEventListener('click',function(e){const mainNav=document.querySelector('.main-nav');if(mainNav&&mainNav.classList.contains('active')){mainNav.classList.remove('active');}});});const mobileMenuToggle=document.querySelector('.mobile-menu-toggle');const mainNav=document.querySelector('.main-nav');if(mobileMenuToggle&&mainNav){mobileMenuToggle.addEventListener('click',function(){mainNav.classList.toggle('active');console.log('移动端菜单切换');});}document.querySelectorAll('button').forEach(button=>{button.addEventListener('click',function(){this.classList.add('clicked');setTimeout(()=>{this.classList.remove('clicked');},300);});});}
+// 初始化页面功能
+function initPageFunctions(){console.log('初始化页面功能...');window.generateCourseware=function(subject,grade,topic){console.log('生成课件：',{subject,grade,topic});if(typeof TRAE!=='undefined'){return TRAE.generate({prompt:`为乡村教师生成一份关于${topic}的课件，适合${grade}年级${subject}学科，包含教学目标、重点难点、教学过程和练习题目`,model:'trae-solo',max_tokens:2000,temperature:0.7}).then(response=>{console.log('课件生成成功：',response);return response;}).catch(error=>{console.error('课件生成失败：',error);return{content:`# ${topic} - 课件\n\n## 教学目标\n- 了解${topic}的基本概念\n- 掌握${topic}的核心内容\n- 能够应用所学知识解决实际问题\n\n## 教学重点\n重点讲解${topic}的关键知识点，确保学生理解掌握。\n\n## 教学难点\n难点在于${topic}的应用，需要通过实例帮助学生理解。\n\n## 教学过程\n1. 导入：通过生活实例引入${topic}\n2. 讲解：详细讲解${topic}的知识点\n3. 练习：通过练习题巩固所学\n4. 总结：归纳${topic}的核心内容\n\n## 练习题目\n1. 选择题：关于${topic}的基本概念\n2. 填空题：${topic}的核心内容\n3. 简答题：${topic}的应用`};});}else{return Promise.resolve({content:`# ${topic} - 课件\n\n## 教学目标\n- 了解${topic}的基本概念\n- 掌握${topic}的核心内容\n- 能够应用所学知识解决实际问题\n\n## 教学重点\n重点讲解${topic}的关键知识点，确保学生理解掌握。\n\n## 教学难点\n难点在于${topic}的应用，需要通过实例帮助学生理解。\n\n## 教学过程\n1. 导入：通过生活实例引入${topic}\n2. 讲解：详细讲解${topic}的知识点\n3. 练习：通过练习题巩固所学\n4. 总结：归纳${topic}的核心内容\n\n## 练习题目\n1. 选择题：关于${topic}的基本概念\n2. 填空题：${topic}的核心内容\n3. 简答题：${topic}的应用`});}};window.designLessonPlan=function(subject,grade,topic){console.log('设计教案：',{subject,grade,topic});if(typeof TRAE!=='undefined'){return TRAE.generate({prompt:`为乡村教师设计一份关于${topic}的教案，适合${grade}年级${subject}学科，包含教学目标、教学重难点、教学方法、教学过程、板书设计和作业布置`,model:'trae-solo',max_tokens:2000,temperature:0.7}).then(response=>{console.log('教案设计成功：',response);return response;}).catch(error=>{console.error('教案设计失败：',error);return{content:`# ${topic} - 教案\n\n## 教学目标\n- 知识目标：掌握${topic}的基本概念和核心内容\n- 能力目标：培养学生分析问题和解决问题的能力\n- 情感目标：激发学生学习${topic}的兴趣\n\n## 教学重难点\n- 重点：${topic}的核心概念和基本原理\n- 难点：${topic}的应用和实际问题解决\n\n## 教学方法\n- 讲授法：讲解${topic}的基本概念和原理\n- 讨论法：组织学生讨论${topic}的应用\n- 练习法：通过练习巩固所学知识\n\n## 教学过程\n1. 导入（5分钟）：通过生活实例引入${topic}\n2. 新授（20分钟）：讲解${topic}的核心内容\n3. 讨论（10分钟）：组织学生讨论${topic}的应用\n4. 练习（10分钟）：通过练习题巩固所学\n5. 总结（5分钟）：归纳${topic}的核心内容\n\n## 板书设计\n- 主板书：${topic}的核心概念和原理\n- 副板书：例题和练习\n\n## 作业布置\n1. 完成课本练习题\n2. 思考${topic}在生活中的应用`};});}else{return Promise.resolve({content:`# ${topic} - 教案\n\n## 教学目标\n- 知识目标：掌握${topic}的基本概念和核心内容\n- 能力目标：培养学生分析问题和解决问题的能力\n- 情感目标：激发学生学习${topic}的兴趣\n\n## 教学重难点\n- 重点：${topic}的核心概念和基本原理\n- 难点：${topic}的应用和实际问题解决\n\n## 教学方法\n- 讲授法：讲解${topic}的基本概念和原理\n- 讨论法：组织学生讨论${topic}的应用\n- 练习法：通过练习巩固所学知识\n\n## 教学过程\n1. 导入（5分钟）：通过生活实例引入${topic}\n2. 新授（20分钟）：讲解${topic}的核心内容\n3. 讨论（10分钟）：组织学生讨论${topic}的应用\n4. 练习（10分钟）：通过练习题巩固所学\n5. 总结（5分钟）：归纳${topic}的核心内容\n\n## 板书设计\n- 主板书：${topic}的核心概念和原理\n- 副板书：例题和练习\n\n## 作业布置\n1. 完成课本练习题\n2. 思考${topic}在生活中的应用`});}};window.analyzeKeyPoints=function(content){console.log('分析重难点：',content);if(typeof TRAE!=='undefined'){return TRAE.generate({prompt:`分析以下教学内容的重难点，并提供详细的解析和教学建议：\n${content}`,model:'trae-solo',max_tokens:2000,temperature:0.7}).then(response=>{console.log('重难点分析成功：',response);return response;}).catch(error=>{console.error('重难点分析失败：',error);return{content:`# 重难点分析\n\n## 重点内容\n- 核心概念：需要学生重点掌握的基本概念\n- 关键原理：理解${content.substring(0,50)}...的基本原理\n- 应用方法：掌握${content.substring(0,50)}...的应用方法\n\n## 难点内容\n- 概念理解：${content.substring(0,50)}...的概念较为抽象，学生理解困难\n- 应用技巧：${content.substring(0,50)}...的应用需要一定的技巧\n- 知识联系：${content.substring(0,50)}...与其他知识点的联系较为复杂\n\n## 教学建议\n- 采用可视化教学方法，帮助学生理解抽象概念\n- 提供丰富的实例，帮助学生掌握应用技巧\n- 建立知识网络，帮助学生理解知识点之间的联系\n- 设计分层练习，满足不同学生的学习需求`};});}else{return Promise.resolve({content:`# 重难点分析\n\n## 重点内容\n- 核心概念：需要学生重点掌握的基本概念\n- 关键原理：理解${content.substring(0,50)}...的基本原理\n- 应用方法：掌握${content.substring(0,50)}...的应用方法\n\n## 难点内容\n- 概念理解：${content.substring(0,50)}...的概念较为抽象，学生理解困难\n- 应用技巧：${content.substring(0,50)}...的应用需要一定的技巧\n- 知识联系：${content.substring(0,50)}...与其他知识点的联系较为复杂\n\n## 教学建议\n- 采用可视化教学方法，帮助学生理解抽象概念\n- 提供丰富的实例，帮助学生掌握应用技巧\n- 建立知识网络，帮助学生理解知识点之间的联系\n- 设计分层练习，满足不同学生的学习需求`});}};}
+// 工具函数
+function showNotification(message,type='info'){console.log(type+':',message);}
+function validateForm(formData){for(const[key,value]of Object.entries(formData)){if(!value||value.trim()===''){return{valid:false,message:`请填写${key}`};}}return{valid:true};}
+// 本地存储管理
+function saveToLocalStorage(key,data){try{localStorage.setItem(key,JSON.stringify(data));return true;}catch(error){console.error('存储数据失败：',error);return false;}}
+function getFromLocalStorage(key){try{const data=localStorage.getItem(key);return data?JSON.parse(data):null;}catch(error){console.error('获取数据失败：',error);return null;}}
