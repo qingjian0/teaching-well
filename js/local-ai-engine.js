@@ -71,75 +71,99 @@
         subjectProfiles: {
             chinese: {
                 name: '语文',
-                characteristics: '重视阅读理解、古诗词、作文写作',
+                characteristics: '重视语言建构与运用、思维发展与提升、审美鉴赏与创造、文化传承与理解',
                 keyMethods: ['朗读法', '品词析句', '阅读理解', '写作指导'],
-                activities: ['朗读比赛', '角色扮演', '小组讨论', '写作工作坊']
+                activities: ['朗读比赛', '角色扮演', '小组讨论', '写作工作坊'],
+                coreLiteracy: ['语言运用', '思维能力', '审美能力', '文化自信'],
+                moralElements: ['中华优秀传统文化', '革命文化', '社会主义先进文化']
             },
             math: {
                 name: '数学',
-                characteristics: '重视逻辑思维、计算能力、问题解决',
+                characteristics: '重视数学抽象、逻辑推理、数学建模、直观想象、数学运算、数据分析',
                 keyMethods: ['启发式教学', '数形结合', '变式训练', '合作探究'],
-                activities: ['计算竞赛', '数学游戏', '动手操作', '实际问题解决']
+                activities: ['计算竞赛', '数学游戏', '动手操作', '实际问题解决'],
+                coreLiteracy: ['数学抽象', '逻辑推理', '数学建模', '直观想象'],
+                moralElements: ['科学精神', '理性思维', '求真务实']
             },
             english: {
                 name: '英语',
-                characteristics: '重视听说读写、语境理解、交际能力',
+                characteristics: '重视语言能力、文化意识、思维品质、学习能力',
                 keyMethods: ['情境教学', '任务型教学', '听说领先', '读写跟进'],
-                activities: ['对话练习', '角色扮演', '口语展示', '阅读理解']
+                activities: ['对话练习', '角色扮演', '口语展示', '阅读理解'],
+                coreLiteracy: ['语言能力', '文化意识', '思维品质', '学习能力'],
+                moralElements: ['国际视野', '跨文化理解', '爱国情怀']
             },
             science: {
                 name: '科学',
-                characteristics: '重视观察实验、探究能力、科学素养',
+                characteristics: '重视科学观念、科学思维、探究实践、态度责任',
                 keyMethods: ['实验探究', '观察记录', '猜想验证', '科学推理'],
-                activities: ['科学实验', '观察日记', '小组探究', '科学展示']
+                activities: ['科学实验', '观察日记', '小组探究', '科学展示'],
+                coreLiteracy: ['科学观念', '科学思维', '探究实践', '社会责任'],
+                moralElements: ['科学精神', '创新意识', '环保意识']
             },
             moral: {
                 name: '道德与法治',
-                characteristics: '重视品德教育、法治意识、情感体验',
+                characteristics: '重视政治认同、道德修养、法治观念健全人格',
                 keyMethods: ['情境体验', '案例分析', '讨论辨析', '实践践行'],
-                activities: ['道德两难讨论', '案例分析', '角色扮演', '实践活动']
+                activities: ['道德两难讨论', '案例分析', '角色扮演', '实践活动'],
+                coreLiteracy: ['政治认同', '道德修养', '法治观念', '健全人格'],
+                moralElements: ['社会主义核心价值观', '中华传统美德', '公民意识']
             },
             history: {
                 name: '历史',
-                characteristics: '重视时空观念、历史解释、家国情怀',
+                characteristics: '重视唯物史观、时空观念、史料实证、历史解释、家国情怀',
                 keyMethods: ['史料研习', '时空定位', '历史比较', '叙事讲述'],
-                activities: ['史料分析', '时间轴制作', '角色扮演', '历史辩论']
+                activities: ['史料分析', '时间轴制作', '角色扮演', '历史辩论'],
+                coreLiteracy: ['唯物史观', '时空观念', '史料实证', '历史解释'],
+                moralElements: ['家国情怀', '民族自信', '历史责任感']
             },
             geography: {
                 name: '地理',
-                characteristics: '重视区域认知、综合思维、地理实践',
+                characteristics: '重视区域认知、综合思维、地理实践、人地协调',
                 keyMethods: ['地图分析', '区域比较', '综合分析', '野外考察'],
-                activities: ['地图绘制', '区域调研', '气候分析', '人口统计']
+                activities: ['地图绘制', '区域调研', '气候分析', '人口统计'],
+                coreLiteracy: ['区域认知', '综合思维', '地理实践', '人地协调'],
+                moralElements: ['人地协调观', '生态文明', '全球视野']
             },
             music: {
                 name: '音乐',
-                characteristics: '重视审美体验、艺术表现、文化理解',
+                characteristics: '重视审美感知、艺术表现、文化理解',
                 keyMethods: ['聆听体验', '演唱演奏', '创编表现', '合作表演'],
-                activities: ['合唱练习', '乐器演奏', '音乐欣赏', '创作表演']
+                activities: ['合唱练习', '乐器演奏', '音乐欣赏', '创作表演'],
+                coreLiteracy: ['审美感知', '艺术表现', '文化理解'],
+                moralElements: ['中华音乐文化', '民族精神', '艺术修养']
             },
             art: {
                 name: '美术',
-                characteristics: '重视视觉审美、造型表现、创意实践',
+                characteristics: '重视图像识读、审美判断、创意实践、文化理解',
                 keyMethods: ['观察欣赏', '技法训练', '创意表现', '评价反思'],
-                activities: ['写生活动', '手工制作', '作品欣赏', '创意比赛']
+                activities: ['写生活动', '手工制作', '作品欣赏', '创意比赛'],
+                coreLiteracy: ['图像识读', '审美判断', '创意实践', '文化理解'],
+                moralElements: ['中华优秀传统文化', '民族自豪感', '创新精神']
             },
             pe: {
                 name: '体育与健康',
-                characteristics: '重视体能训练、运动技能、健康意识',
+                characteristics: '重视运动能力、健康行为、体育品德',
                 keyMethods: ['示范讲解', '分解练习', '游戏竞赛', '安全教育'],
-                activities: ['体能训练', '技能练习', '体育游戏', '健康知识']
+                activities: ['体能训练', '技能练习', '体育游戏', '健康知识'],
+                coreLiteracy: ['运动能力', '健康行为', '体育品德'],
+                moralElements: ['拼搏精神', '团队协作', '规则意识']
             },
             it: {
                 name: '信息技术',
-                characteristics: '重视信息素养、技术应用、创新思维',
+                characteristics: '重视信息意识、计算思维数字化学习与创新、信息社会责任',
                 keyMethods: ['任务驱动', '操作演示', '自主探究', '协作学习'],
-                activities: ['作品创作', '编程练习', '网络应用', '作品展示']
+                activities: ['作品创作', '编程练习', '网络应用', '作品展示'],
+                coreLiteracy: ['信息意识', '计算思维', '数字化学习', '信息社会责任'],
+                moralElements: ['网络安全意识', '知识产权', '信息伦理']
             },
             other: {
                 name: '其他',
                 characteristics: '综合性教学',
                 keyMethods: ['讲授法', '讨论法', '演示法', '实践法'],
-                activities: ['知识讲解', '课堂讨论', '实践操作', '总结反馈']
+                activities: ['知识讲解', '课堂讨论', '实践操作', '总结反馈'],
+                coreLiteracy: ['基础知识', '基本技能', '核心素养'],
+                moralElements: ['品德教育', '价值观引导']
             }
         },
 
@@ -245,34 +269,71 @@
         },
 
         generateTeachingObjectives: function(subjectInfo, topic) {
+            const coreLiteracy = subjectInfo.coreLiteracy || ['基础知识', '基本技能'];
+            const moralElements = subjectInfo.moralElements || ['品德教育'];
+            
             return `
-                <div style="background: white; border-radius: 10px; padding: 1.5rem; margin-bottom: 1.5rem; box-shadow: 0 2px 8px rgba(0,0,0,0.05); border: 1px solid #e2e8f0;">
+                <div style="background: white; border-radius: 12px; padding: 1.5rem; margin-bottom: 1.5rem; box-shadow: 0 2px 8px rgba(0,0,0,0.05); border: 1px solid #e2e8f0;">
                     <h3 style="color: #4f46e5; margin: 0 0 1rem 0; font-size: 1.2rem; display: flex; align-items: center; gap: 0.5rem;">
-                        <span style="background: #e0e7ff; width: 28px; height: 28px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-size: 0.9rem;">🎯</span>
-                        教学目标
+                        <span style="background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%); width: 28px; height: 28px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-size: 0.9rem; color: white;">🎯</span>
+                        核心素养导向的教学目标
+                        <span style="background: #fef3c7; color: #92400e; padding: 0.2rem 0.6rem; border-radius: 12px; font-size: 0.75rem; margin-left: 0.5rem;">依据2022新课标</span>
                     </h3>
+                    
+                    <div style="background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%); padding: 1rem; border-radius: 8px; margin-bottom: 1rem; border-left: 4px solid #16a34a;">
+                        <p style="margin: 0; color: #166534; font-size: 0.9rem; line-height: 1.6;">
+                            <strong>【课程标准要求】</strong>本课时的教学设计应体现${subjectInfo.name}学科的核心素养培养，注重"知识获取→能力形成→素养达成"的学习进阶路径。
+                        </p>
+                    </div>
+                    
                     <div style="display: grid; gap: 1rem;">
                         <div style="display: flex; align-items: flex-start; gap: 0.75rem;">
-                            <span style="background: #dcfce7; color: #16a34a; width: 24px; height: 24px; border-radius: 6px; display: inline-flex; align-items: center; justify-content: center; font-weight: bold; flex-shrink: 0;">知</span>
-                            <div>
-                                <strong style="color: #166534;">知识与技能</strong>
-                                <p style="margin: 0.25rem 0 0 0; color: #4a5568;">学生能够掌握${topic}的基本概念，理解其核心要点，并能够正确运用。</p>
+                            <span style="background: linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%); color: #16a34a; width: 28px; height: 28px; border-radius: 8px; display: inline-flex; align-items: center; justify-content: center; font-weight: bold; flex-shrink: 0; font-size: 0.8rem;">核心素养</span>
+                            <div style="flex: 1;">
+                                <strong style="color: #166534; font-size: 1rem;">${subjectInfo.name}核心素养目标</strong>
+                                <p style="margin: 0.5rem 0 0 0; color: #4a5568; font-size: 0.9rem; line-height: 1.6;">
+                                    通过${topic}的学习，学生能够：<br>
+                                    • 理解${coreLiteracy[0]}的内涵，掌握${topic}的基本概念与原理<br>
+                                    • 运用${subjectInfo.keyMethods[0]}分析和解决与${topic}相关的实际问题<br>
+                                    • 在探究过程中发展${coreLiteracy[1] || '思维能力'}，形成科学的学习方法
+                                </p>
+                                <div style="margin-top: 0.75rem; display: flex; gap: 0.5rem; flex-wrap: wrap;">
+                                    ${coreLiteracy.map((literacy, idx) => `
+                                        <span style="background: white; border: 1px solid #d1fae5; color: #059669; padding: 0.2rem 0.5rem; border-radius: 12px; font-size: 0.75rem;">
+                                            ${idx + 1}. ${literacy}
+                                        </span>
+                                    `).join('')}
+                                </div>
                             </div>
                         </div>
+                        
                         <div style="display: flex; align-items: flex-start; gap: 0.75rem;">
-                            <span style="background: #fef3c7; color: #d97706; width: 24px; height: 24px; border-radius: 6px; display: inline-flex; align-items: center; justify-content: center; font-weight: bold; flex-shrink: 0;">能</span>
-                            <div>
-                                <strong style="color: #92400e;">过程与方法</strong>
-                                <p style="margin: 0.25rem 0 0 0; color: #4a5568;">通过${subjectInfo.characteristics}，培养学生的观察、分析和表达能力。</p>
+                            <span style="background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%); color: #d97706; width: 28px; height: 28px; border-radius: 8px; display: inline-flex; align-items: center; justify-content: center; font-weight: bold; flex-shrink: 0; font-size: 0.8rem;">学业</span>
+                            <div style="flex: 1;">
+                                <strong style="color: #92400e; font-size: 1rem;">学业表现目标</strong>
+                                <p style="margin: 0.5rem 0 0 0; color: #4a5568; font-size: 0.9rem; line-height: 1.6;">
+                                    • <strong>知识层面：</strong>能够准确表述${topic}的定义，说出其主要特征<br>
+                                    • <strong>能力层面：</strong>能够运用${topic}解决2-3道典型例题，举一反三<br>
+                                    • <strong>应用层面：</strong>能够将${topic}与生活实际相联系，解释现象
+                                </p>
                             </div>
                         </div>
+                        
                         <div style="display: flex; align-items: flex-start; gap: 0.75rem;">
-                            <span style="background: #e0e7ff; color: #4f46e5; width: 24px; height: 24px; border-radius: 6px; display: inline-flex; align-items: center; justify-content: center; font-weight: bold; flex-shrink: 0;">情</span>
-                            <div>
-                                <strong style="color: #3730a3;">情感态度与价值观</strong>
-                                <p style="margin: 0.25rem 0 0 0; color: #4a5568;">激发学生对${topic}的学习兴趣，培养良好的学习习惯和探究精神。</p>
+                            <span style="background: linear-gradient(135deg, #fce7f3 0%, #fbcfe8 100%); color: #be185d; width: 28px; height: 28px; border-radius: 8px; display: inline-flex; align-items: center; justify-content: center; font-weight: bold; flex-shrink: 0; font-size: 0.8rem;">德育</span>
+                            <div style="flex: 1;">
+                                <strong style="color: #9d174d; font-size: 1rem;">德育与价值观目标</strong>
+                                <p style="margin: 0.5rem 0 0 0; color: #4a5568; font-size: 0.9rem; line-height: 1.6;">
+                                    结合${topic}的学习，渗透${moralElements ? moralElements.join('、') : '品德教育'}，培养学生的社会责任感、家国情怀和创新精神，引导学生形成正确的价值观。
+                                </p>
                             </div>
                         </div>
+                    </div>
+                    
+                    <div style="margin-top: 1rem; padding: 0.75rem; background: #f7fafc; border-radius: 6px; border: 1px dashed #cbd5e0;">
+                        <p style="margin: 0; color: #718096; font-size: 0.8rem; text-align: center;">
+                            💡 <strong>设计说明：</strong>教学目标应具体、可观测、可评价，体现"教-学-评"一致性原则
+                        </p>
                     </div>
                 </div>
             `;
@@ -311,83 +372,128 @@
 
         generateTeachingProcess: function(subjectInfo, gradeInfo, topic) {
             const duration = gradeInfo.attention.replace('-', '~');
+            const subjectPractice = subjectInfo.characteristics;
+            
             return `
-                <div style="background: white; border-radius: 10px; padding: 1.5rem; margin-bottom: 1.5rem; box-shadow: 0 2px 8px rgba(0,0,0,0.05); border: 1px solid #e2e8f0;">
+                <div style="background: white; border-radius: 12px; padding: 1.5rem; margin-bottom: 1.5rem; box-shadow: 0 2px 8px rgba(0,0,0,0.05); border: 1px solid #e2e8f0;">
                     <h3 style="color: #4f46e5; margin: 0 0 1rem 0; font-size: 1.2rem; display: flex; align-items: center; gap: 0.5rem;">
-                        <span style="background: #e0e7ff; width: 28px; height: 28px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-size: 0.9rem;">📖</span>
-                        教学过程
+                        <span style="background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%); width: 28px; height: 28px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-size: 0.9rem; color: white;">📖</span>
+                        学科实践活动教学过程
+                        <span style="background: #fef3c7; color: #92400e; padding: 0.2rem 0.6rem; border-radius: 12px; font-size: 0.75rem;">新课标要求</span>
                     </h3>
+                    
+                    <div style="background: linear-gradient(135deg, #ede9fe 0%, #ddd6fe 100%); padding: 1rem; border-radius: 8px; margin-bottom: 1.25rem; border-left: 4px solid #7c3aed;">
+                        <p style="margin: 0; color: #5b21b6; font-size: 0.9rem; line-height: 1.6;">
+                            <strong>【学科实践要求】</strong>注重"做中学"，设计真实的学科实践活动，让学生在实践过程中理解知识、形成能力、达成素养。实践活动应围绕${subjectPractice}展开。
+                        </p>
+                    </div>
+                    
                     <div style="position: relative; padding-left: 2rem;">
-                        <div style="position: absolute; left: 0.6rem; top: 0; bottom: 0; width: 2px; background: #e2e8f0;"></div>
+                        <div style="position: absolute; left: 0.6rem; top: 0; bottom: 0; width: 2px; background: linear-gradient(180deg, #4f46e5 0%, #10b981 100%);"></div>
                         
-                        <div style="position: relative; margin-bottom: 1.5rem;">
-                            <div style="position: absolute; left: -1.4rem; width: 24px; height: 24px; background: #4f46e5; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 0.75rem; font-weight: bold;">1</div>
-                            <div style="background: linear-gradient(135deg, #eef2ff 0%, #e0e7ff 100%); padding: 1rem; border-radius: 8px;">
-                                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
-                                    <h4 style="color: #4f46e5; margin: 0; font-size: 1rem;">🏃 导入新课（5分钟）</h4>
+                        <div style="position: relative; margin-bottom: 1.75rem;">
+                            <div style="position: absolute; left: -1.5rem; width: 30px; height: 30px; background: linear-gradient(135deg, #4f46e5 0%, #6366f1 100%); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 0.8rem; font-weight: bold; box-shadow: 0 2px 8px rgba(79, 70, 229, 0.3);">1</div>
+                            <div style="background: linear-gradient(135deg, #eef2ff 0%, #e0e7ff 100%); padding: 1.25rem; border-radius: 10px; border: 1px solid #c7d2fe;">
+                                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem;">
+                                    <h4 style="color: #4f46e5; margin: 0; font-size: 1.05rem;">🏃 情境导入·激发兴趣（5分钟）</h4>
+                                    <span style="background: #4f46e5; color: white; padding: 0.2rem 0.6rem; border-radius: 12px; font-size: 0.75rem;">素养起点</span>
                                 </div>
-                                <p style="margin: 0; color: #4a5568; font-size: 0.9rem;">
-                                    通过${subjectInfo.activities[0]}引入课题，激发学生学习兴趣，自然过渡到${topic}的学习。
+                                <p style="margin: 0 0 0.75rem 0; color: #4a5568; font-size: 0.9rem;">
+                                    <strong>实践活动：</strong>通过${subjectInfo.activities[0]}创设真实情境，引出${topic}，激发学生的探究欲望。
                                 </p>
-                            </div>
-                        </div>
-                        
-                        <div style="position: relative; margin-bottom: 1.5rem;">
-                            <div style="position: absolute; left: -1.4rem; width: 24px; height: 24px; background: #7c3aed; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 0.75rem; font-weight: bold;">2</div>
-                            <div style="background: linear-gradient(135deg, #f3e8ff 0%, #e9d5ff 100%); padding: 1rem; border-radius: 8px;">
-                                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
-                                    <h4 style="color: #7c3aed; margin: 0; font-size: 1rem;">📚 讲授新知（15分钟）</h4>
-                                </div>
-                                <p style="margin: 0; color: #4a5568; font-size: 0.9rem;">
-                                    讲解${topic}的基本概念和核心内容，运用${subjectInfo.keyMethods[0]}，结合教材和生活实例，帮助学生理解。
-                                </p>
-                                <div style="margin-top: 0.75rem; padding: 0.75rem; background: white; border-radius: 6px;">
-                                    <p style="margin: 0; color: #6b7280; font-size: 0.85rem;"><strong>教师活动：</strong>讲解示范 → <strong>学生活动：</strong>认真听讲、积极思考</p>
+                                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem;">
+                                    <div style="background: white; padding: 0.6rem; border-radius: 6px;">
+                                        <p style="margin: 0; color: #6b7280; font-size: 0.8rem;"><strong>教师活动：</strong>情境创设、问题提出</p>
+                                    </div>
+                                    <div style="background: white; padding: 0.6rem; border-radius: 6px;">
+                                        <p style="margin: 0; color: #6b7280; font-size: 0.8rem;"><strong>学生活动：</strong>观察思考、提出疑问</p>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                         
-                        <div style="position: relative; margin-bottom: 1.5rem;">
-                            <div style="position: absolute; left: -1.4rem; width: 24px; height: 24px; background: #059669; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 0.75rem; font-weight: bold;">3</div>
-                            <div style="background: linear-gradient(135deg, #ecfdf5 0%, #d1fae5 100%); padding: 1rem; border-radius: 8px;">
-                                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
-                                    <h4 style="color: #059669; margin: 0; font-size: 1rem;">🤝 合作探究（10分钟）</h4>
+                        <div style="position: relative; margin-bottom: 1.75rem;">
+                            <div style="position: absolute; left: -1.5rem; width: 30px; height: 30px; background: linear-gradient(135deg, #7c3aed 0%, #8b5cf6 100%); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 0.8rem; font-weight: bold; box-shadow: 0 2px 8px rgba(124, 58, 237, 0.3);">2</div>
+                            <div style="background: linear-gradient(135deg, #f3e8ff 0%, #e9d5ff 100%); padding: 1.25rem; border-radius: 10px; border: 1px solid #d8b4fe;">
+                                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem;">
+                                    <h4 style="color: #7c3aed; margin: 0; font-size: 1.05rem;">🔍 学科实践·探究新知（15分钟）</h4>
+                                    <span style="background: #7c3aed; color: white; padding: 0.2rem 0.6rem; border-radius: 12px; font-size: 0.75rem;">核心素养</span>
                                 </div>
-                                <p style="margin: 0; color: #4a5568; font-size: 0.9rem;">
-                                    组织学生进行${subjectInfo.activities[2]}，通过小组讨论和合作学习，深化对${topic}的理解。
+                                <p style="margin: 0 0 0.75rem 0; color: #4a5568; font-size: 0.9rem;">
+                                    <strong>学科实践活动：</strong>运用${subjectInfo.keyMethods[0]}和${subjectInfo.keyMethods[1]}进行实践探究，学生通过动手操作、合作交流的方式建构知识。
                                 </p>
-                                <div style="margin-top: 0.75rem; padding: 0.75rem; background: white; border-radius: 6px;">
-                                    <p style="margin: 0; color: #6b7280; font-size: 0.85rem;"><strong>教师活动：</strong>巡视指导 → <strong>学生活动：</strong>小组讨论、代表发言</p>
+                                <div style="background: white; padding: 0.75rem; border-radius: 6px; margin-bottom: 0.75rem;">
+                                    <p style="margin: 0; color: #6b7280; font-size: 0.85rem;">
+                                        <strong>实践活动设计：</strong>
+                                        <br>① 任务驱动：发布与${topic}相关的实践任务
+                                        <br>② 自主探究：学生运用${subjectInfo.keyMethods[0]}分析问题
+                                        <br>③ 合作交流：小组讨论，碰撞思维
+                                    </p>
+                                </div>
+                                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem;">
+                                    <div style="background: white; padding: 0.6rem; border-radius: 6px;">
+                                        <p style="margin: 0; color: #6b7280; font-size: 0.8rem;"><strong>教师活动：</strong>引导启发、适时点拨</p>
+                                    </div>
+                                    <div style="background: white; padding: 0.6rem; border-radius: 6px;">
+                                        <p style="margin: 0; color: #6b7280; font-size: 0.8rem;"><strong>学生活动：</strong>实践操作、合作探究</p>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                         
-                        <div style="position: relative; margin-bottom: 1.5rem;">
-                            <div style="position: absolute; left: -1.4rem; width: 24px; height: 24px; background: #d97706; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 0.75rem; font-weight: bold;">4</div>
-                            <div style="background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%); padding: 1rem; border-radius: 8px;">
-                                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
-                                    <h4 style="color: #d97706; margin: 0; font-size: 1rem;">✏️ 巩固练习（10分钟）</h4>
+                        <div style="position: relative; margin-bottom: 1.75rem;">
+                            <div style="position: absolute; left: -1.5rem; width: 30px; height: 30px; background: linear-gradient(135deg, #059669 0%, #10b981 100%); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 0.8rem; font-weight: bold; box-shadow: 0 2px 8px rgba(5, 150, 105, 0.3);">3</div>
+                            <div style="background: linear-gradient(135deg, #ecfdf5 0%, #d1fae5 100%); padding: 1.25rem; border-radius: 10px; border: 1px solid #6ee7b7;">
+                                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem;">
+                                    <h4 style="color: #059669; margin: 0; font-size: 1.05rem;">💡 精讲点拨·形成结构（10分钟）</h4>
+                                    <span style="background: #059669; color: white; padding: 0.2rem 0.6rem; border-radius: 12px; font-size: 0.75rem;">知识建构</span>
                                 </div>
-                                <p style="margin: 0; color: #4a5568; font-size: 0.9rem;">
-                                    完成课堂练习，通过${subjectInfo.activities[1]}检验学生对${topic}的掌握情况，及时发现问题并纠正。
+                                <p style="margin: 0 0 0.75rem 0; color: #4a5568; font-size: 0.9rem;">
+                                    <strong>学科实践深化：</strong>教师精讲点拨，引导学生归纳${topic}的核心要点，建构知识体系，运用${subjectInfo.keyMethods[2]}进行变式训练。
                                 </p>
-                                <div style="margin-top: 0.75rem; padding: 0.75rem; background: white; border-radius: 6px;">
-                                    <p style="margin: 0; color: #6b7280; font-size: 0.85rem;"><strong>教师活动：</strong>个别辅导 → <strong>学生活动：</strong>独立完成、互评互助</p>
+                                <div style="background: white; padding: 0.75rem; border-radius: 6px;">
+                                    <p style="margin: 0; color: #6b7280; font-size: 0.85rem;">
+                                        <strong>思维可视化：</strong>引导学生绘制${topic}的思维导图或概念图，形成完整的知识结构。
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div style="position: relative; margin-bottom: 1.75rem;">
+                            <div style="position: absolute; left: -1.5rem; width: 30px; height: 30px; background: linear-gradient(135deg, #d97706 0%, #f59e0b 100%); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 0.8rem; font-weight: bold; box-shadow: 0 2px 8px rgba(217, 119, 6, 0.3);">4</div>
+                            <div style="background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%); padding: 1.25rem; border-radius: 10px; border: 1px solid #fcd34d;">
+                                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem;">
+                                    <h4 style="color: #d97706; margin: 0; font-size: 1.05rem;">✏️ 实践应用·巩固提升（10分钟）</h4>
+                                    <span style="background: #d97706; color: white; padding: 0.2rem 0.6rem; border-radius: 12px; font-size: 0.75rem;">能力迁移</span>
+                                </div>
+                                <p style="margin: 0 0 0.75rem 0; color: #4a5568; font-size: 0.9rem;">
+                                    <strong>实践任务：</strong>通过${subjectInfo.activities[1]}和${subjectInfo.activities[2]}进行实践应用，将所学知识用于解决实际问题。
+                                </p>
+                                <div style="background: white; padding: 0.75rem; border-radius: 6px;">
+                                    <p style="margin: 0; color: #6b7280; font-size: 0.85rem;">
+                                        <strong>分层练习：</strong>
+                                        <br>🌱 基础层：完成${topic}的基础练习
+                                        <br>🌿 标准层：解决${topic}的综合问题
+                                        <br>🌳 拓展层：挑战${topic}的拓展任务
+                                    </p>
                                 </div>
                             </div>
                         </div>
                         
                         <div style="position: relative;">
-                            <div style="position: absolute; left: -1.4rem; width: 24px; height: 24px; background: #dc2626; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 0.75rem; font-weight: bold;">5</div>
-                            <div style="background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%); padding: 1rem; border-radius: 8px;">
-                                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
-                                    <h4 style="color: #dc2626; margin: 0; font-size: 1rem;">📝 课堂总结（5分钟）</h4>
+                            <div style="position: absolute; left: -1.5rem; width: 30px; height: 30px; background: linear-gradient(135deg, #dc2626 0%, #ef4444 100%); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 0.8rem; font-weight: bold; box-shadow: 0 2px 8px rgba(220, 38, 38, 0.3);">5</div>
+                            <div style="background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%); padding: 1.25rem; border-radius: 10px; border: 1px solid #fca5a5;">
+                                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem;">
+                                    <h4 style="color: #dc2626; margin: 0; font-size: 1.05rem;">📝 反思总结·达成素养（5分钟）</h4>
+                                    <span style="background: #dc2626; color: white; padding: 0.2rem 0.6rem; border-radius: 12px; font-size: 0.75rem;">素养达成</span>
                                 </div>
-                                <p style="margin: 0; color: #4a5568; font-size: 0.9rem;">
-                                    引导学生回顾本节内容，总结${topic}的要点，布置课后作业，预告下节课内容。
+                                <p style="margin: 0 0 0.75rem 0; color: #4a5568; font-size: 0.9rem;">
+                                    <strong>反思实践：</strong>引导学生回顾本课学习过程，反思${subjectInfo.coreLiteracy ? subjectInfo.coreLiteracy.join('、') : '核心素养'}的达成情况，总结学习收获与困惑。
                                 </p>
-                                <div style="margin-top: 0.75rem; padding: 0.75rem; background: white; border-radius: 6px;">
-                                    <p style="margin: 0; color: #6b7280; font-size: 0.85rem;"><strong>教师活动：</strong>梳理总结 → <strong>学生活动：</strong>畅谈收获、提出疑问</p>
+                                <div style="background: white; padding: 0.75rem; border-radius: 6px;">
+                                    <p style="margin: 0; color: #6b7280; font-size: 0.85rem;">
+                                        <strong>素养自评：</strong>学生对本课核心素养目标的达成情况进行自我评价，明确努力方向。
+                                    </p>
                                 </div>
                             </div>
                         </div>
@@ -469,6 +575,106 @@
                             <p style="margin: 0; color: #4a5568; font-size: 0.9rem;">
                                 思考${topic}与相关知识的联系，绘制知识思维导图。
                             </p>
+                        </div>
+                    </div>
+                </div>
+            `;
+        },
+
+        generateAcademicQuality: function(options) {
+            const { topic, subject, grade } = options;
+            const subjectInfo = this.subjectProfiles[subject] || this.subjectProfiles.other;
+            const gradeInfo = this.gradeProfiles[grade] || this.gradeProfiles['1'];
+            const coreLiteracy = subjectInfo.coreLiteracy || ['基础知识', '基本技能'];
+            
+            return `
+                <div style="background: white; border-radius: 12px; padding: 1.5rem; margin-bottom: 1.5rem; box-shadow: 0 2px 8px rgba(0,0,0,0.05); border: 1px solid #e2e8f0;">
+                    <h3 style="color: #4f46e5; margin: 0 0 1rem 0; font-size: 1.2rem; display: flex; align-items: center; gap: 0.5rem;">
+                        <span style="background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%); width: 28px; height: 28px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-size: 0.9rem; color: white;">📊</span>
+                        学业质量评价标准
+                        <span style="background: #fef3c7; color: #92400e; padding: 0.2rem 0.6rem; border-radius: 12px; font-size: 0.75rem;">新课标要求</span>
+                    </h3>
+                    
+                    <div style="background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%); padding: 1rem; border-radius: 8px; margin-bottom: 1.25rem; border-left: 4px solid #16a34a;">
+                        <p style="margin: 0; color: #166534; font-size: 0.9rem; line-height: 1.6;">
+                            <strong>【学业质量描述】</strong>依据2022年版义务教育课程标准，本课时学业质量应体现${subjectInfo.name}学科核心素养的达成程度，明确学生"学到什么程度"。
+                        </p>
+                    </div>
+                    
+                    <div style="display: grid; gap: 1rem;">
+                        <div style="background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%); padding: 1.25rem; border-radius: 10px; border: 1px solid #93c5fd;">
+                            <h4 style="color: #1e40af; margin: 0 0 1rem 0; font-size: 1.05rem; display: flex; align-items: center; gap: 0.5rem;">
+                                <span style="background: #1e40af; color: white; width: 24px; height: 24px; border-radius: 6px; display: inline-flex; align-items: center; justify-content: center; font-size: 0.8rem;">1</span>
+                                学业质量整体描述
+                            </h4>
+                            <p style="margin: 0; color: #1e3a8a; font-size: 0.9rem; line-height: 1.6;">
+                                学生能够理解${topic}的基本概念与原理，掌握${coreLiteracy[0]}和${coreLiteracy[1] || coreLiteracy[0]}，能够运用${subjectInfo.keyMethods[0]}解决实际问题，在学习过程中形成科学态度和创新意识，达到${gradeInfo.name}学生应有的学业水平。
+                            </p>
+                        </div>
+                        
+                        <div style="background: white; padding: 1.25rem; border-radius: 10px; border: 2px solid #e2e8f0;">
+                            <h4 style="color: #2d3748; margin: 0 0 1rem 0; font-size: 1.05rem; display: flex; align-items: center; gap: 0.5rem;">
+                                <span style="background: linear-gradient(135deg, #059669 0%, #10b981 100%); color: white; width: 24px; height: 24px; border-radius: 6px; display: inline-flex; align-items: center; justify-content: center; font-size: 0.8rem;">2</span>
+                                学业表现具体标准
+                            </h4>
+                            <div style="display: grid; gap: 0.75rem;">
+                                <div style="display: flex; align-items: center; gap: 0.75rem; padding: 0.75rem; background: #f7fafc; border-radius: 8px;">
+                                    <span style="background: #059669; color: white; width: 28px; height: 28px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-weight: bold; flex-shrink: 0;">优</span>
+                                    <div style="flex: 1;">
+                                        <p style="margin: 0; color: #166534; font-size: 0.9rem;">
+                                            <strong>优秀：</strong>能准确表述${topic}的定义，灵活运用知识解决复杂问题，能进行知识迁移与创新应用。
+                                        </p>
+                                    </div>
+                                </div>
+                                <div style="display: flex; align-items: center; gap: 0.75rem; padding: 0.75rem; background: #f7fafc; border-radius: 8px;">
+                                    <span style="background: #3b82f6; color: white; width: 28px; height: 28px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-weight: bold; flex-shrink: 0;">良</span>
+                                    <div style="flex: 1;">
+                                        <p style="margin: 0; color: #1e40af; font-size: 0.9rem;">
+                                            <strong>良好：</strong>能正确理解${topic}的概念，熟练运用基本方法解决问题，能举一反三。
+                                        </p>
+                                    </div>
+                                </div>
+                                <div style="display: flex; align-items: center; gap: 0.75rem; padding: 0.75rem; background: #f7fafc; border-radius: 8px;">
+                                    <span style="background: #f59e0b; color: white; width: 28px; height: 28px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-weight: bold; flex-shrink: 0;">中</span>
+                                    <div style="flex: 1;">
+                                        <p style="margin: 0; color: #92400e; font-size: 0.9rem;">
+                                            <strong>中等：</strong>能识记${topic}的基本内容，在教师指导下能完成简单应用题。
+                                        </p>
+                                    </div>
+                                </div>
+                                <div style="display: flex; align-items: center; gap: 0.75rem; padding: 0.75rem; background: #f7fafc; border-radius: 8px;">
+                                    <span style="background: #dc2626; color: white; width: 28px; height: 28px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-weight: bold; flex-shrink: 0;">待</span>
+                                    <div style="flex: 1;">
+                                        <p style="margin: 0; color: #991b1b; font-size: 0.9rem;">
+                                            <strong>待提高：</strong>初步了解${topic}的表象内容，需要在教师和同伴帮助下完成基础任务。
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div style="background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%); padding: 1.25rem; border-radius: 10px; border: 1px solid #fcd34d;">
+                            <h4 style="color: #92400e; margin: 0 0 1rem 0; font-size: 1.05rem; display: flex; align-items: center; gap: 0.5rem;">
+                                <span style="background: #92400e; color: white; width: 24px; height: 24px; border-radius: 6px; display: inline-flex; align-items: center; justify-content: center; font-size: 0.8rem;">3</span>
+                                评价方式建议
+                            </h4>
+                            <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.75rem;">
+                                <div style="background: white; padding: 0.75rem; border-radius: 8px; text-align: center;">
+                                    <div style="font-size: 1.5rem; margin-bottom: 0.5rem;">📋</div>
+                                    <p style="margin: 0; color: #4a5568; font-size: 0.85rem;"><strong>过程性评价</strong></p>
+                                    <p style="margin: 0.25rem 0 0 0; color: #718096; font-size: 0.8rem;">课堂表现、小组合作</p>
+                                </div>
+                                <div style="background: white; padding: 0.75rem; border-radius: 8px; text-align: center;">
+                                    <div style="font-size: 1.5rem; margin-bottom: 0.5rem;">✏️</div>
+                                    <p style="margin: 0; color: #4a5568; font-size: 0.85rem;"><strong>表现性评价</strong></p>
+                                    <p style="margin: 0.25rem 0 0 0; color: #718096; font-size: 0.8rem;">实践任务、作品展示</p>
+                                </div>
+                                <div style="background: white; padding: 0.75rem; border-radius: 8px; text-align: center;">
+                                    <div style="font-size: 1.5rem; margin-bottom: 0.5rem;">📝</div>
+                                    <p style="margin: 0; color: #4a5568; font-size: 0.85rem;"><strong>纸笔测试</strong></p>
+                                    <p style="margin: 0.25rem 0 0 0; color: #718096; font-size: 0.8rem;">知识掌握、问题解决</p>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
