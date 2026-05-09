@@ -584,6 +584,384 @@
                     </div>
                 </div>
             `;
+        },
+
+        generateQuiz: function(options) {
+            const { topic, subject, grade, difficulty = 'medium', questionTypes = ['choice', 'fill', 'short'] } = options;
+            const subjectInfo = this.subjectProfiles[subject] || this.subjectProfiles.other;
+            const gradeInfo = this.gradeProfiles[grade] || this.gradeProfiles['1'];
+            
+            const difficultyConfig = {
+                easy: { label: '基础', color: '#10b981', bg: '#dcfce7' },
+                medium: { label: '中等', color: '#f59e0b', bg: '#fef3c7' },
+                hard: { label: '拓展', color: '#ef4444', bg: '#fee2e2' }
+            };
+            
+            const difficultyInfo = difficultyConfig[difficulty] || difficultyConfig.medium;
+            
+            let quizHTML = `
+                <div style="background: white; border-radius: 12px; padding: 1.5rem; margin-top: 1.5rem; box-shadow: 0 4px 12px rgba(0,0,0,0.08); border: 1px solid #e2e8f0;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+                        <h3 style="color: #4f46e5; margin: 0; font-size: 1.3rem; display: flex; align-items: center; gap: 0.5rem;">
+                            <span style="background: #e0e7ff; width: 32px; height: 32px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-size: 1rem;">📝</span>
+                            配套练习题
+                        </h3>
+                        <span style="background: ${difficultyInfo.bg}; color: ${difficultyInfo.color}; padding: 0.35rem 0.75rem; border-radius: 20px; font-size: 0.85rem; font-weight: 600;">
+                            ${difficultyInfo.label}难度
+                        </span>
+                    </div>
+            `;
+            
+            let questionNumber = 1;
+            
+            if (questionTypes.includes('choice')) {
+                quizHTML += this.generateChoiceQuestions(topic, subjectInfo, difficulty, questionNumber);
+                questionNumber += 4;
+            }
+            
+            if (questionTypes.includes('fill')) {
+                quizHTML += this.generateFillQuestions(topic, subjectInfo, questionNumber);
+                questionNumber += 3;
+            }
+            
+            if (questionTypes.includes('short')) {
+                quizHTML += this.generateShortAnswerQuestions(topic, subjectInfo, questionNumber);
+            }
+            
+            quizHTML += `
+                    <div style="margin-top: 1.5rem; padding: 1rem; background: #f7fafc; border-radius: 8px;">
+                        <h4 style="color: #4a5568; margin: 0 0 0.5rem 0; font-size: 0.95rem;">💡 答题提示</h4>
+                        <p style="margin: 0; color: #718096; font-size: 0.85rem;">
+                            ${gradeInfo.attention}注意力集中时间，建议分批次完成练习。
+                        </p>
+                    </div>
+                </div>
+            `;
+            
+            return quizHTML;
+        },
+
+        generateChoiceQuestions: function(topic, subjectInfo, difficulty, startNum) {
+            const count = 4;
+            let questionsHTML = `
+                <div style="margin-bottom: 1.5rem;">
+                    <h4 style="color: #7c3aed; margin: 0 0 1rem 0; font-size: 1.1rem; display: flex; align-items: center; gap: 0.5rem;">
+                        <span style="background: #f3e8ff; width: 24px; height: 24px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-size: 0.8rem;">☑</span>
+                        选择题（共${count}题）
+                    </h4>
+            `;
+            
+            for (let i = 0; i < count; i++) {
+                const qNum = startNum + i;
+                const isCorrect = i === 0;
+                const options = [
+                    { text: `A. ${topic}的核心概念`, correct: isCorrect },
+                    { text: `B. ${topic}的应用原则`, correct: !isCorrect },
+                    { text: `C. ${topic}的历史背景`, correct: !isCorrect },
+                    { text: `D. ${topic}的发展趋势`, correct: !isCorrect }
+                ];
+                
+                questionsHTML += `
+                    <div style="background: #f7fafc; padding: 1rem; border-radius: 8px; margin-bottom: 0.75rem; border-left: 3px solid #7c3aed;">
+                        <p style="margin: 0 0 0.75rem 0; color: #2d3748; font-weight: 600;">
+                            ${qNum}. 关于${topic}的说法，正确的是：
+                        </p>
+                        <div style="display: grid; gap: 0.5rem;">
+                            ${options.map(opt => `
+                                <label style="display: flex; align-items: center; gap: 0.5rem; padding: 0.5rem; background: white; border-radius: 6px; cursor: pointer; transition: all 0.2s;">
+                                    <input type="radio" name="q${qNum}" style="accent-color: #7c3aed;">
+                                    <span style="color: #4a5568; font-size: 0.9rem;">${opt.text}</span>
+                                </label>
+                            `).join('')}
+                        </div>
+                    </div>
+                `;
+            }
+            
+            questionsHTML += `</div>`;
+            return questionsHTML;
+        },
+
+        generateFillQuestions: function(topic, subjectInfo, startNum) {
+            const count = 3;
+            let questionsHTML = `
+                <div style="margin-bottom: 1.5rem;">
+                    <h4 style="color: #059669; margin: 0 0 1rem 0; font-size: 1.1rem; display: flex; align-items: center; gap: 0.5rem;">
+                        <span style="background: #dcfce7; width: 24px; height: 24px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-size: 0.8rem;">✏</span>
+                        填空题（共${count}题）
+                    </h4>
+            `;
+            
+            const fillQuestions = [
+                `${topic}的三个核心要素是：_____、_____、_____。`,
+                `在学习${topic}时，我们应该特别注意_____这个环节。`,
+                `${topic}与${subjectInfo.name}学科的结合点在于_____。`
+            ];
+            
+            for (let i = 0; i < count; i++) {
+                const qNum = startNum + i;
+                questionsHTML += `
+                    <div style="background: #f7fafc; padding: 1rem; border-radius: 8px; margin-bottom: 0.75rem; border-left: 3px solid #059669;">
+                        <p style="margin: 0; color: #2d3748; font-weight: 600;">
+                            ${qNum}. ${fillQuestions[i]}
+                        </p>
+                        <div style="margin-top: 0.75rem;">
+                            <input type="text" placeholder="请在此处作答..." style="width: 100%; padding: 0.75rem; border: 2px solid #e2e8f0; border-radius: 6px; font-size: 0.9rem;">
+                        </div>
+                    </div>
+                `;
+            }
+            
+            questionsHTML += `</div>`;
+            return questionsHTML;
+        },
+
+        generateShortAnswerQuestions: function(topic, subjectInfo, startNum) {
+            const count = 2;
+            let questionsHTML = `
+                <div style="margin-bottom: 1rem;">
+                    <h4 style="color: #d97706; margin: 0 0 1rem 0; font-size: 1.1rem; display: flex; align-items: center; gap: 0.5rem;">
+                        <span style="background: #fef3c7; width: 24px; height: 24px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-size: 0.8rem;">📄</span>
+                        简答题（共${count}题）
+                    </h4>
+            `;
+            
+            const shortQuestions = [
+                `请结合实际例子，说明${topic}在生活中的应用场景。`,
+                `${subjectInfo.name}学科中，${topic}与其他知识点有什么联系？请举例说明。`
+            ];
+            
+            for (let i = 0; i < count; i++) {
+                const qNum = startNum + i;
+                questionsHTML += `
+                    <div style="background: #f7fafc; padding: 1rem; border-radius: 8px; margin-bottom: 0.75rem; border-left: 3px solid #d97706;">
+                        <p style="margin: 0 0 0.75rem 0; color: #2d3748; font-weight: 600;">
+                            ${qNum}. ${shortQuestions[i]}
+                        </p>
+                        <div style="margin-top: 0.75rem;">
+                            <textarea placeholder="请在此作答..." style="width: 100%; min-height: 80px; padding: 0.75rem; border: 2px solid #e2e8f0; border-radius: 6px; font-size: 0.9rem; resize: vertical;"></textarea>
+                        </div>
+                    </div>
+                `;
+            }
+            
+            questionsHTML += `</div>`;
+            return questionsHTML;
+        },
+
+        generateDifferentiatedTeaching: function(options) {
+            const { topic, subject, grade } = options;
+            const subjectInfo = this.subjectProfiles[subject] || this.subjectProfiles.other;
+            const gradeInfo = this.gradeProfiles[grade] || this.gradeProfiles['1'];
+            
+            const levels = [
+                {
+                    name: '基础层',
+                    icon: '🌱',
+                    color: '#10b981',
+                    bg: '#dcfce7',
+                    target: '基础薄弱学生',
+                    description: '夯实基础，确保掌握核心概念'
+                },
+                {
+                    name: '标准层',
+                    icon: '🌿',
+                    color: '#3b82f6',
+                    bg: '#dbeafe',
+                    target: '中等水平学生',
+                    description: '巩固提升，能够灵活运用知识'
+                },
+                {
+                    name: '拓展层',
+                    icon: '🌳',
+                    color: '#8b5cf6',
+                    bg: '#ede9fe',
+                    target: '学优生',
+                    description: '挑战自我，培养创新思维'
+                }
+            ];
+            
+            let differentiatedHTML = `
+                <div style="background: white; border-radius: 12px; padding: 1.5rem; margin-top: 1.5rem; box-shadow: 0 4px 12px rgba(0,0,0,0.08); border: 1px solid #e2e8f0;">
+                    <h3 style="color: #4f46e5; margin: 0 0 1.5rem 0; font-size: 1.3rem; display: flex; align-items: center; gap: 0.5rem;">
+                        <span style="background: #e0e7ff; width: 32px; height: 32px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-size: 1rem;">📊</span>
+                        分层教学设计
+                    </h3>
+                    
+                    <div style="background: #fef3c7; padding: 1rem; border-radius: 8px; margin-bottom: 1.5rem; border-left: 4px solid #f59e0b;">
+                        <p style="margin: 0; color: #92400e; font-size: 0.9rem;">
+                            <strong>💡 设计理念：</strong>根据学生个体差异，提供差异化学习内容，实现"保底不封顶"的教学目标。
+                        </p>
+                    </div>
+                    
+                    <div style="display: grid; gap: 1rem;">
+            `;
+            
+            levels.forEach((level, index) => {
+                differentiatedHTML += `
+                    <div style="background: ${level.bg}; border-radius: 12px; padding: 1.25rem; border-left: 4px solid ${level.color};">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                            <div style="display: flex; align-items: center; gap: 0.75rem;">
+                                <span style="font-size: 1.75rem;">${level.icon}</span>
+                                <div>
+                                    <h4 style="margin: 0; color: ${level.color}; font-size: 1.1rem;">${level.name}</h4>
+                                    <p style="margin: 0.25rem 0 0 0; color: #718096; font-size: 0.85rem;">${level.target}</p>
+                                </div>
+                            </div>
+                            <span style="background: white; color: ${level.color}; padding: 0.35rem 0.75rem; border-radius: 20px; font-size: 0.8rem; font-weight: 600;">
+                                ${index === 0 ? '10-15分钟' : index === 1 ? '15-20分钟' : '20-25分钟'}
+                            </span>
+                        </div>
+                        
+                        <p style="margin: 0 0 1rem 0; color: #4a5568; font-size: 0.9rem;">
+                            <strong>目标：</strong>${level.description}
+                        </p>
+                        
+                        <div style="background: white; padding: 1rem; border-radius: 8px;">
+                            <h5 style="margin: 0 0 0.75rem 0; color: #2d3748; font-size: 0.95rem;">📋 学习任务</h5>
+                            <ul style="margin: 0; padding-left: 1.25rem; color: #4a5568; font-size: 0.85rem; line-height: 1.8;">
+                                ${this.getLevelTasks(topic, subjectInfo, index)}
+                            </ul>
+                        </div>
+                        
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-top: 1rem;">
+                            <div style="background: white; padding: 0.75rem; border-radius: 8px;">
+                                <h5 style="margin: 0 0 0.5rem 0; color: #059669; font-size: 0.85rem;">✓ 支持策略</h5>
+                                <p style="margin: 0; color: #718096; font-size: 0.8rem;">${this.getSupportStrategy(topic, index)}</p>
+                            </div>
+                            <div style="background: white; padding: 0.75rem; border-radius: 8px;">
+                                <h5 style="margin: 0 0 0.5rem 0; color: #dc2626; font-size: 0.85rem;">⚡ 评价标准</h5>
+                                <p style="margin: 0; color: #718096; font-size: 0.8rem;">${this.getEvaluationCriteria(index)}</p>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            differentiatedHTML += `
+                    </div>
+                    
+                    <div style="margin-top: 1.5rem; padding: 1rem; background: #f7fafc; border-radius: 8px;">
+                        <h4 style="color: #4a5568; margin: 0 0 0.5rem 0; font-size: 0.95rem;">🎯 实施建议</h4>
+                        <ul style="margin: 0; padding-left: 1.25rem; color: #718096; font-size: 0.85rem; line-height: 1.8;">
+                            <li>课前进行学情诊断，明确学生所在层次</li>
+                            <li>分层任务差异化，课堂巡视时重点关注基础层学生</li>
+                            <li>鼓励高层级学生担任"小助教"，实现生生互助</li>
+                            <li>课后作业分层布置，保护不同层次学生的学习积极性</li>
+                        </ul>
+                    </div>
+                </div>
+            `;
+            
+            return differentiatedHTML;
+        },
+
+        getLevelTasks: function(topic, subjectInfo, level) {
+            const tasks = [
+                [
+                    `熟读${topic}相关内容，划出重点词句`,
+                    `能用自己的话说出${topic}的基本含义`,
+                    `完成教材后的基础练习（1-3题）`,
+                    `背诵${topic}的核心定义`
+                ],
+                [
+                    `理解${topic}的内涵，能够举例说明`,
+                    `运用${subjectInfo.keyMethods[0]}分析${topic}`,
+                    `完成教材后的全部练习`,
+                    `尝试解决与${topic}相关的实际问题`
+                ],
+                [
+                    `深入探究${topic}的深层含义`,
+                    `分析${topic}与相关知识点的联系`,
+                    `完成拓展练习题，挑战高难度问题`,
+                    `尝试将${topic}应用到新情境中`
+                ]
+            ];
+            return tasks[level].map(task => `<li style="margin-bottom: 0.35rem;">${task}</li>`).join('');
+        },
+
+        getSupportStrategy: function(topic, level) {
+            const strategies = [
+                '教师重点讲解，同学互助',
+                '标准讲解+适当拓展',
+                '自主探究+挑战任务'
+            ];
+            return strategies[level];
+        },
+
+        getEvaluationCriteria: function(level) {
+            const criteria = [
+                '正确率≥60%',
+                '正确率≥80%',
+                '创新性+正确率'
+            ];
+            return criteria[level];
+        },
+
+        generateLearningAnalysis: function(options) {
+            const { topic, subject, grade } = options;
+            const subjectInfo = this.subjectProfiles[subject] || this.subjectProfiles.other;
+            const gradeInfo = this.gradeProfiles[grade] || this.gradeProfiles['1'];
+            
+            const commonMisconceptions = [
+                `容易混淆${topic}与相似概念的区别`,
+                `对${topic}的理解停留在表面`,
+                `无法将${topic}与实际应用联系起来`
+            ];
+            
+            const priorKnowledge = [
+                `${subjectInfo.name}学科基础知识`,
+                `${gradeInfo.name}学生认知发展水平`,
+                `日常生活中的相关经验`
+            ];
+            
+            let analysisHTML = `
+                <div style="background: white; border-radius: 12px; padding: 1.5rem; margin-top: 1.5rem; box-shadow: 0 4px 12px rgba(0,0,0,0.08); border: 1px solid #e2e8f0;">
+                    <h3 style="color: #4f46e5; margin: 0 0 1.5rem 0; font-size: 1.3rem; display: flex; align-items: center; gap: 0.5rem;">
+                        <span style="background: #e0e7ff; width: 32px; height: 32px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-size: 1rem;">🔍</span>
+                        学情分析报告
+                    </h3>
+                    
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;">
+                        <div>
+                            <h4 style="color: #059669; margin: 0 0 1rem 0; font-size: 1.1rem;">📚 先备知识</h4>
+                            <div style="background: #f0fdf4; padding: 1rem; border-radius: 8px;">
+                                <ul style="margin: 0; padding-left: 1.25rem; color: #4a5568; font-size: 0.9rem; line-height: 2;">
+                                    ${priorKnowledge.map(item => `<li>${item}</li>`).join('')}
+                                </ul>
+                            </div>
+                        </div>
+                        
+                        <div>
+                            <h4 style="color: #dc2626; margin: 0 0 1rem 0; font-size: 1.1rem;">⚠️ 常见误区</h4>
+                            <div style="background: #fef2f2; padding: 1rem; border-radius: 8px;">
+                                <ul style="margin: 0; padding-left: 1.25rem; color: #4a5568; font-size: 0.9rem; line-height: 2;">
+                                    ${commonMisconceptions.map(item => `<li>${item}</li>`).join('')}
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div style="margin-top: 1.5rem;">
+                        <h4 style="color: #7c3aed; margin: 0 0 1rem 0; font-size: 1.1rem;">🎯 学习路径推荐</h4>
+                        <div style="background: #faf5ff; padding: 1rem; border-radius: 8px;">
+                            <div style="display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap;">
+                                <span style="background: #4f46e5; color: white; padding: 0.35rem 0.75rem; border-radius: 20px; font-size: 0.85rem;">1. 复习先备知识</span>
+                                <span style="color: #a0aec0;">→</span>
+                                <span style="background: #7c3aed; color: white; padding: 0.35rem 0.75rem; border-radius: 20px; font-size: 0.85rem;">2. 情境导入</span>
+                                <span style="color: #a0aec0;">→</span>
+                                <span style="background: #059669; color: white; padding: 0.35rem 0.75rem; border-radius: 20px; font-size: 0.85rem;">3. 概念讲解</span>
+                                <span style="color: #a0aec0;">→</span>
+                                <span style="background: #d97706; color: white; padding: 0.35rem 0.75rem; border-radius: 20px; font-size: 0.85rem;">4. 练习巩固</span>
+                                <span style="color: #a0aec0;">→</span>
+                                <span style="background: #dc2626; color: white; padding: 0.35rem 0.75rem; border-radius: 20px; font-size: 0.85rem;">5. 总结提升</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            return analysisHTML;
         }
     };
 

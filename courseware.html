@@ -319,6 +319,21 @@
                     <button type="button" class="btn-secondary" id="printBtn">打印教案</button>
                     <button type="button" class="btn-secondary" id="regenerateBtn">重新生成</button>
                 </div>
+                
+                <div style="margin-top: 1.5rem; padding-top: 1.5rem; border-top: 2px dashed #e2e8f0;">
+                    <h4 style="text-align: center; color: #4f46e5; margin-bottom: 1rem; font-size: 1.1rem;">📚 增值功能</h4>
+                    <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
+                        <button type="button" class="btn-secondary" id="generateQuizBtn" style="background: linear-gradient(135deg, #7c3aed 0%, #a855f7 100%); color: white; border: none;">
+                            📝 生成练习题
+                        </button>
+                        <button type="button" class="btn-secondary" id="generateDiffBtn" style="background: linear-gradient(135deg, #059669 0%, #10b981 100%); color: white; border: none;">
+                            📊 分层教学设计
+                        </button>
+                        <button type="button" class="btn-secondary" id="generateAnalysisBtn" style="background: linear-gradient(135deg, #dc2626 0%, #ef4444 100%); color: white; border: none;">
+                            🔍 学情分析报告
+                        </button>
+                    </div>
+                </div>
             </div>
         </section>
     </main>
@@ -631,6 +646,104 @@
                         alert('教案微调失败，请稍后重试');
                         console.error('教案微调失败：', error);
                     });
+            });
+
+            // 生成练习题按钮
+            document.getElementById('generateQuizBtn').addEventListener('click', function() {
+                const subject = document.getElementById('subject').value;
+                const grade = document.getElementById('grade').value;
+                const topic = document.getElementById('topic').value;
+                
+                if (!subject || !grade || !topic) {
+                    ToastManager.warning('请先生成教案或填写完整信息');
+                    return;
+                }
+                
+                const loadingEl = document.getElementById('loading');
+                const loadingText = loadingEl.querySelector('p');
+                loadingEl.classList.add('active');
+                loadingText.textContent = '正在生成练习题...';
+                
+                setTimeout(() => {
+                    const quizHTML = LocalAIEngine.generateQuiz({
+                        topic: topic,
+                        subject: subject,
+                        grade: grade,
+                        difficulty: 'medium',
+                        questionTypes: ['choice', 'fill', 'short']
+                    });
+                    
+                    const resultContent = document.getElementById('resultContent');
+                    resultContent.innerHTML += quizHTML;
+                    loadingEl.classList.remove('active');
+                    ToastManager.success('练习题生成成功！');
+                    
+                    resultContent.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }, 800);
+            });
+
+            // 分层教学设计按钮
+            document.getElementById('generateDiffBtn').addEventListener('click', function() {
+                const subject = document.getElementById('subject').value;
+                const grade = document.getElementById('grade').value;
+                const topic = document.getElementById('topic').value;
+                
+                if (!subject || !grade || !topic) {
+                    ToastManager.warning('请先生成教案或填写完整信息');
+                    return;
+                }
+                
+                const loadingEl = document.getElementById('loading');
+                const loadingText = loadingEl.querySelector('p');
+                loadingEl.classList.add('active');
+                loadingText.textContent = '正在生成分层教学设计...';
+                
+                setTimeout(() => {
+                    const diffHTML = LocalAIEngine.generateDifferentiatedTeaching({
+                        topic: topic,
+                        subject: subject,
+                        grade: grade
+                    });
+                    
+                    const resultContent = document.getElementById('resultContent');
+                    resultContent.innerHTML += diffHTML;
+                    loadingEl.classList.remove('active');
+                    ToastManager.success('分层教学设计生成成功！');
+                    
+                    resultContent.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }, 800);
+            });
+
+            // 学情分析报告按钮
+            document.getElementById('generateAnalysisBtn').addEventListener('click', function() {
+                const subject = document.getElementById('subject').value;
+                const grade = document.getElementById('grade').value;
+                const topic = document.getElementById('topic').value;
+                
+                if (!subject || !grade || !topic) {
+                    ToastManager.warning('请先生成教案或填写完整信息');
+                    return;
+                }
+                
+                const loadingEl = document.getElementById('loading');
+                const loadingText = loadingEl.querySelector('p');
+                loadingEl.classList.add('active');
+                loadingText.textContent = '正在生成学情分析报告...';
+                
+                setTimeout(() => {
+                    const analysisHTML = LocalAIEngine.generateLearningAnalysis({
+                        topic: topic,
+                        subject: subject,
+                        grade: grade
+                    });
+                    
+                    const resultContent = document.getElementById('resultContent');
+                    resultContent.innerHTML += analysisHTML;
+                    loadingEl.classList.remove('active');
+                    ToastManager.success('学情分析报告生成成功！');
+                    
+                    resultContent.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }, 800);
             });
         });
         
