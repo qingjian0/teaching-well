@@ -1,0 +1,30 @@
+# Dependencies
+node_modules/
+.yarn/
+
+# Build output
+dist/
+build/
+.next/
+.turbo/
+
+# Environment
+.env
+.env.local
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Archives
+*.zip
+*.rar
+*.7z
+
+# Cache
+.vite/
+.cache/
